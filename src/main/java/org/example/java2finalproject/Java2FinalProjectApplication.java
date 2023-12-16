@@ -8,6 +8,7 @@ public class Java2FinalProjectApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(Java2FinalProjectApplication.class, args);
+
     }
 
 }
