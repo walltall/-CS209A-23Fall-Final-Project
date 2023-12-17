@@ -2,10 +2,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-public class getData {
+public class getQuestionData {
     public static void main(String[] args) throws IOException {
         int pagesize = 100;
         for (int page = 1; page <= 10; page++) {

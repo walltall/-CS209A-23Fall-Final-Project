@@ -9,7 +9,7 @@ import org.example.java2finalproject.dao.ThreadRepository;
 import org.example.java2finalproject.entity.ThreadsData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.example.java2finalproject.GetAnswerData;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,6 +52,18 @@ public class ThreadDataService {
             }
         }
         return count;
+    }
+    public boolean getAnswerData(){
+        //先去网上爬数据
+        List<ThreadsData>allData=getAllThreadData();
+        String urlPrefix="https://api.stackexchange.com/2.3/questions/";
+        String urlSuffix="/answers?order=desc&sort=activity&site=stackoverflow";
+        for(int i=0;i<allData.size();i++){
+            String url=urlPrefix+allData.get(i).getQuestion_id()+urlSuffix;
+            GetAnswerData.getUrlData(url,i);
+        }
+        return true;
+
     }
 
     public void deleteAll() {
@@ -124,8 +136,9 @@ public class ThreadDataService {
                             interestingTagsCount[i].num);
         }
         return getInterestingDataAverageViewCount;
-
     }
+
+
 
 
 }

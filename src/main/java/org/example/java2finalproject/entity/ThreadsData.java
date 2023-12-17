@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 @Entity
 @Table(name = "ThreadsData")
 public class ThreadsData {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
     @Getter
     @Setter
     private String tags;
@@ -36,6 +33,7 @@ public class ThreadsData {
     @Getter
     @Setter
     private long creation_date;
+    @Id
     @Getter
     @Setter
     private long last_edit_date;

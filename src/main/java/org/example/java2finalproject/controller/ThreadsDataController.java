@@ -24,6 +24,11 @@ public class ThreadsDataController {
         int count=threadDataService.loadData();
         return Result.success("已导入"+count+"条数据");
     }
+    @GetMapping("/getAnswerData")
+    public Result getAnswerData() {
+        boolean t=threadDataService.getAnswerData();
+        return Result.success(t);
+    }
     @GetMapping("/getAllData")
     public Result getAllData() {
         return Result.success(threadDataService.getAllThreadData());
@@ -73,6 +78,16 @@ public class ThreadsDataController {
         HashMap<String,Long> ans=threadDataService.getInterestingDataAverageViewCount();
         return Result.success(ans);
     }
-
+    @GetMapping("/answerRate")
+    public Result  answerRate() {
+        List<ThreadsData>threadsData=threadDataService.getAllThreadData();
+        int count=0;
+        for(int i=0;i<threadsData.size();i++){
+            if(threadsData.get(i).is_answered()){
+                count++;
+            }
+        }
+        return Result.success(count);
+    }
 
 }
