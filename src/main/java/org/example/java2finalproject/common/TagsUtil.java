@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class TagsUtil {
     public static String[] interestingTags=
-            {"sockets","spring","servlets","jdbc","multithreading","generics","tomcat",
+            {"spring","servlets","jdbc","multithreading","generics","tomcat",
             "jar","jvm","file","serialization","inheritance"};
     public static String[] getTagsArray(String tags) {
         //去掉开头的[与结尾的],并除去空格

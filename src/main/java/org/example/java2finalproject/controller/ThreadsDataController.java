@@ -2,7 +2,9 @@ package org.example.java2finalproject.controller;
 
 import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.TagsUtil;
+import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.entity.ThreadsData;
+import org.example.java2finalproject.service.AnswerDataService;
 import org.example.java2finalproject.service.ThreadDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +21,24 @@ import java.util.List;
 public class ThreadsDataController {
     @Autowired
     private ThreadDataService threadDataService;
+    @Autowired
+    private AnswerDataService answerDataService;
     @GetMapping("/importDataToDatabase")
     public Result importDataToDatabase() throws IOException {
         int count=threadDataService.loadData();
         return Result.success("已导入"+count+"条数据");
     }
-    @GetMapping("/getAnswerData")
+    @GetMapping("/getAnswerDataFromTheWeb")
     public Result getAnswerData() {
-        boolean t=threadDataService.getAnswerData();
+        boolean t=answerDataService.getAnswerData();
         return Result.success(t);
     }
+    @GetMapping("/loadAnswerData")
+    public Result loadAnswerData() throws IOException {
+        int count=answerDataService.loadAnswerData();
+        return Result.success("已导入"+count+"条数据");
+    }
+
     @GetMapping("/getAllData")
     public Result getAllData() {
         return Result.success(threadDataService.getAllThreadData());

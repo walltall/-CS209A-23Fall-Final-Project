@@ -5,7 +5,9 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.TagsUtil;
+import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.dao.ThreadRepository;
+import org.example.java2finalproject.entity.AnswerData;
 import org.example.java2finalproject.entity.ThreadsData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import java.util.*;
 public class ThreadDataService {
     @Autowired
     ThreadRepository threadRepository;
+
     public Optional<ThreadsData> getThreadData(Long threadId) {
         return threadRepository.findById(threadId);
     }
@@ -52,18 +55,8 @@ public class ThreadDataService {
         }
         return count;
     }
-    public boolean getAnswerData(){
-        //先去网上爬数据
-        List<ThreadsData>allData=getAllThreadData();
-        String urlPrefix="https://api.stackexchange.com/2.3/questions/";
-        String urlSuffix="/answers?order=desc&sort=activity&site=stackoverflow";
-        for(int i=85;i<allData.size();i++){
-            String url=urlPrefix+allData.get(i).getQuestion_id()+urlSuffix;
-            GetAnswerData.getUrlData(url,i);
-        }
-        return true;
 
-    }
+
 
     public void deleteAll() {
         threadRepository.deleteAll();
@@ -121,7 +114,9 @@ public class ThreadDataService {
         HashMap<String,Integer> tags=getAllTheTags();
         NumCountObject[] ans=new NumCountObject[TagsUtil.interestingTags.length];
         for(int i=0;i<TagsUtil.interestingTags.length;i++){
-            ans[i] = new NumCountObject(TagsUtil.interestingTags[i], tags.get(TagsUtil.interestingTags[i]));
+            if(tags.get(TagsUtil.interestingTags[i])!=null) {
+                ans[i] = new NumCountObject(TagsUtil.interestingTags[i], tags.get(TagsUtil.interestingTags[i]));
+            }
         }
         return ans;
     }
