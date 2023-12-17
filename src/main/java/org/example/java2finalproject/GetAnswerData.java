@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class GetAnswerData {
     public static void getUrlData(String url,int num) {
@@ -25,12 +26,11 @@ public class GetAnswerData {
                 InputStream inputStream = connection.getInputStream();
                 byte[] responseData = IoUtil.readBytes(inputStream);
                 byte[] unzippedData = ZipUtil.unGzip(responseData);
-                String jsonStr = new String(unzippedData, "UTF-8");
+                String jsonStr = new String(unzippedData, StandardCharsets.UTF_8);
                 JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
                 // 将解压缩后的JSON数据保存为文件
                 String filePath = "AnswerDataSource/data_"+num+".json";
                 FileUtil.writeBytes(unzippedData, new File(filePath));
-
                 System.out.println("JSON数据已保存至：" + filePath);
             }
         } catch (IOException e) {
