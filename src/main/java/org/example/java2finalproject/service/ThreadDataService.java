@@ -3,6 +3,7 @@ package org.example.java2finalproject.service;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import org.example.java2finalproject.common.TagsUtil;
 import org.example.java2finalproject.dao.ThreadRepository;
 import org.example.java2finalproject.entity.ThreadsData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,5 +55,36 @@ public class ThreadDataService {
 
     public void deleteAll() {
         threadRepository.deleteAll();
+    }
+    public HashMap<String,Integer> getAllTheTags(){
+        TagsUtil tagsUtil=new TagsUtil();
+        HashMap<String,Integer>checkTags=new HashMap<>();
+        for(ThreadsData threadsData:getAllThreadData()){
+            String tags=threadsData.getTags();
+            if(tags!=null){
+                String[]tagArray=TagsUtil.getTagsArray(tags);
+                for(String tag:tagArray){
+                    if(checkTags.containsKey(tag)){
+                        checkTags.put(tag,checkTags.get(tag)+1);
+                    }else{
+                        checkTags.put(tag,1);
+                    }
+                }
+            }
+        }
+        return checkTags;
+    }
+    public List<ThreadsData>getInterestingData(){
+        List<ThreadsData>allData=getAllThreadData();
+        List<ThreadsData>interestingData=new ArrayList<>();
+        for(int i=0;i<allData.size();i++){
+            for(int j=0;j<TagsUtil.interestingTags.length;j++){
+                if(allData.get(i).getTags().contains("\""+TagsUtil.interestingTags[j]+"\"")){
+                    interestingData.add(allData.get(i));
+                    break;
+                }
+            }
+        }
+        return interestingData;
     }
 }
