@@ -3,6 +3,7 @@ package org.example.java2finalproject.service;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.TagsUtil;
 import org.example.java2finalproject.dao.ThreadRepository;
 import org.example.java2finalproject.entity.ThreadsData;
@@ -87,4 +88,44 @@ public class ThreadDataService {
         }
         return interestingData;
     }
+    public HashMap<String,Long> getInterestingDataViewCount(){
+        HashMap<String,Long>interestingDataViewCount=new HashMap<>();
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            interestingDataViewCount.put(TagsUtil.interestingTags[i],0L);
+        }
+        for(ThreadsData threadsData:getInterestingData()){
+            String tags=threadsData.getTags();
+            if(tags!=null){
+                String[]tagArray=TagsUtil.getTagsArray(tags);
+                for(String tag:tagArray){
+                    if(interestingDataViewCount.containsKey(tag)){
+                        interestingDataViewCount.put(tag,interestingDataViewCount.get(tag)+threadsData.getView_count());
+                    }
+                }
+            }
+        }
+        return interestingDataViewCount;
+    }
+    public NumCountObject[]getInterestingTagsCount(){
+        HashMap<String,Integer> tags=getAllTheTags();
+        NumCountObject[] ans=new NumCountObject[TagsUtil.interestingTags.length];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            ans[i] = new NumCountObject(TagsUtil.interestingTags[i], tags.get(TagsUtil.interestingTags[i]));
+        }
+        return ans;
+    }
+    public HashMap<String,Long>getInterestingDataAverageViewCount(){
+        HashMap<String,Long>getInterestingDataAverageViewCount=new HashMap<>();
+        HashMap<String,Long>interestingDataViewCount=getInterestingDataViewCount();
+        NumCountObject[]interestingTagsCount=getInterestingTagsCount();
+        for(int i=0;i<interestingTagsCount.length;i++){
+            getInterestingDataAverageViewCount.put(interestingTagsCount[i].content.toString()
+                    ,interestingDataViewCount.get(interestingTagsCount[i].content.toString())/
+                            interestingTagsCount[i].num);
+        }
+        return getInterestingDataAverageViewCount;
+
+    }
+
+
 }

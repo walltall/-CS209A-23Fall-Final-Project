@@ -55,15 +55,7 @@ public class ThreadsDataController {
     }
     @GetMapping("/checkInterestingTags")
     public Result checkInterestingTags() {
-        HashMap<String,Integer> tags=threadDataService.getAllTheTags();
-        NumCountObject[] ans=new NumCountObject[TagsUtil.interestingTags.length];
-        for(int i=0;i<TagsUtil.interestingTags.length;i++){
-            if(!tags.containsKey(TagsUtil.interestingTags[i])){
-                System.out.println("标签"+TagsUtil.interestingTags[i]+"不存在");
-            }else {
-                ans[i] = new NumCountObject(TagsUtil.interestingTags[i], tags.get(TagsUtil.interestingTags[i]));
-            }
-        }
+       NumCountObject[]ans=threadDataService.getInterestingTagsCount();
         return Result.success(ans);
     }
     @GetMapping("/checkInterestingData")
@@ -71,5 +63,16 @@ public class ThreadsDataController {
         List<ThreadsData> ans=threadDataService.getInterestingData();
         return Result.success(ans);
     }
+    @GetMapping("/checkInterestingDataViewCount")
+    public Result checkInterestingDataViewCount() {
+        HashMap<String,Long> ans=threadDataService.getInterestingDataViewCount();
+        return Result.success(ans);
+    }
+    @GetMapping("/checkInterestingDataAverageViewCount")
+    public Result checkInterestingDataAverageViewCount() {
+        HashMap<String,Long> ans=threadDataService.getInterestingDataAverageViewCount();
+        return Result.success(ans);
+    }
+
 
 }
