@@ -6,9 +6,11 @@ import java.util.zip.GZIPInputStream;
 public class getQuestionData {
     public static void main(String[] args) throws IOException {
         int pagesize = 100;
-        for (int page = 1; page <= 10; page++) {
+        for (int page = 16; page <= 18; page++) {
             String prex = "https://api.stackexchange.com/2.3/questions?page=";
-            String url = prex + page + "&pagesize=" + pagesize + "&todate=1702512000&order=asc&sort=activity&tagged=java&site=stackoverflow";
+            ///2.3/questions?page=1&pagesize=1&fromdate=1682899200&todate=1702684800&order=asc&sort=activity&tagged=java&site=stackoverflow
+            ///2.3/questions?page=1&pagesize=1&order=asc&min=1672531200&max=1702684800&sort=activity&tagged=java&site=stackoverflow
+            String url = prex + page + "&pagesize=" + pagesize + "&fromdate=1682899200&todate=1702684800&order=asc&sort=activity&tagged=java&site=stackoverflow";
 
             try {
                 URL apiUrl = new URL(url);

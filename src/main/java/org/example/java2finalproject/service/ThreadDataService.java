@@ -34,7 +34,7 @@ public class ThreadDataService {
     public int loadData() throws IOException {
         String dataPathPrefix = "result_page_";
         String dataPathSuffix = ".json";
-        int dataNum=10;
+        int dataNum=15;
         int count=0;
         for(int i=1;i<=dataNum;i++){
             String dataPath = dataPathPrefix + i + dataPathSuffix;
@@ -57,7 +57,7 @@ public class ThreadDataService {
         List<ThreadsData>allData=getAllThreadData();
         String urlPrefix="https://api.stackexchange.com/2.3/questions/";
         String urlSuffix="/answers?order=desc&sort=activity&site=stackoverflow";
-        for(int i=0;i<allData.size();i++){
+        for(int i=85;i<allData.size();i++){
             String url=urlPrefix+allData.get(i).getQuestion_id()+urlSuffix;
             GetAnswerData.getUrlData(url,i);
         }
