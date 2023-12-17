@@ -14,10 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ThreadDataService {
@@ -27,7 +24,9 @@ public class ThreadDataService {
         return threadRepository.findById(threadId);
     }
     public List<ThreadsData>getAllThreadData() {
-        return threadRepository.findAll();
+        List<ThreadsData> allData = threadRepository.findAll();
+        allData.sort(Comparator.comparingLong(ThreadsData::getQuestion_id));
+        return allData;
     }
     public ThreadsData createThreadData(ThreadsData threadData) {
         return threadRepository.save(threadData);
