@@ -1,46 +1,52 @@
 package org.example.java2finalproject.entity;
 
 import cn.hutool.json.JSONObject;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Entity
 public class AnswerData {
-    @Id
-    @Getter
-    private long answer_id;
-    @Getter
-    @Setter
-    private long question_id;
-    @Getter
-    @Setter
-    private  boolean is_accepted;
-    @Getter
-    @Setter
-    private int score;
-    @Getter
-    @Setter
-    private long last_activity_date;
-    @Getter
-    @Setter
-    private long creation_date;
-    @Getter
-    @Setter
-    private String content_license;
+   @Id
+   private long answer_id;
+   @Getter
+   private long comment_count;
+   @Getter
+   private int score;
+   @Getter
+   private long last_activity_date;
+   @Getter
+   private long creation_date;
+   @Getter
+   private long question_id;
+   @Getter
+   @Lob
+   @Column(columnDefinition="TEXT")
+   private String body_markdown;
+   @Getter
+   private String link;
+   @Getter
+   private String title;
+   @Getter
+   @Lob
+   @Column(columnDefinition="TEXT")
+   private String body;
+
+
 
     public AnswerData(JSONObject jsonObject){
-        this.is_accepted=jsonObject.getBool("is_accepted");
+        this.answer_id=jsonObject.getLong("answer_id");
+        this.comment_count=jsonObject.getLong("comment_count");
         this.score=jsonObject.getInt("score");
         this.last_activity_date=jsonObject.getLong("last_activity_date");
         this.creation_date=jsonObject.getLong("creation_date");
-        this.content_license=jsonObject.getStr("content_license");
-        this.answer_id=jsonObject.getLong("answer_id");
         this.question_id=jsonObject.getLong("question_id");
-        this.creation_date=jsonObject.getLong("creation_date");
+        this.body_markdown=jsonObject.getStr("body_markdown");
+        this.link=jsonObject.getStr("link");
+        this.title=jsonObject.getStr("title");
+        this.body=jsonObject.getStr("body");
     }
 
     public AnswerData() {

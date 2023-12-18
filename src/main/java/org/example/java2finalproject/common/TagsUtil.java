@@ -4,8 +4,8 @@ import java.util.Set;
 
 public class TagsUtil {
     public static String[] interestingTags=
-            {"spring","servlets","jdbc","multithreading","generics","tomcat",
-            "jar","jvm","file","serialization","inheritance"};
+            {"java","spring","spring-boot","spring-data-jpa","jpa","generics","tomcat",
+            "maven","jvm","javafx","serialization","hibernate","jar"};
     public static String[] getTagsArray(String tags) {
         //去掉开头的[与结尾的],并除去空格
         if (tags.startsWith("[") && tags.endsWith("]")) {

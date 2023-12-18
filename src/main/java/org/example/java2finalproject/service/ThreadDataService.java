@@ -5,8 +5,12 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.TagsUtil;
-import org.example.java2finalproject.dao.ThreadRepository;
-import org.example.java2finalproject.entity.ThreadsData;
+import org.example.java2finalproject.dao.AnswerDataRepository;
+import org.example.java2finalproject.dao.CommentDataRepository;
+import org.example.java2finalproject.dao.QuestionDataRepository;
+import org.example.java2finalproject.entity.AnswerData;
+import org.example.java2finalproject.entity.CommentData;
+import org.example.java2finalproject.entity.QuestionData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.java2finalproject.GetUrlData;
@@ -19,23 +23,26 @@ import java.util.*;
 @Service
 public class ThreadDataService {
     @Autowired
-    ThreadRepository threadRepository;
+    QuestionDataRepository questionDataRepository;
+    @Autowired
+    AnswerDataRepository answerDataRepository;
+    @Autowired
+    CommentDataRepository commentDataRepository;
 
-    public Optional<ThreadsData> getThreadData(Long threadId) {
-        return threadRepository.findById(threadId);
+    public Optional<QuestionData> getQuestionData(long question_Id) {
+        return questionDataRepository.findById(question_Id);
     }
-    public List<ThreadsData>getAllThreadData() {
-        List<ThreadsData> allData = threadRepository.findAll();
-        allData.sort(Comparator.comparingLong(ThreadsData::getQuestion_id));
+    public List<QuestionData>getAllThreadData() {
+        List<QuestionData> allData = questionDataRepository.findAll();
+        allData.sort(Comparator.comparingLong(QuestionData::getQuestion_id));
         return allData;
     }
-    public ThreadsData createThreadData(ThreadsData threadData) {
-        return threadRepository.save(threadData);
+    public QuestionData createThreadData(QuestionData threadData) {
+        return questionDataRepository.save(threadData);
     }
-    public int loadData() throws IOException {
-        String dataPathPrefix = "result_page_";
+    public int loadData(int dataNum) throws IOException {
+        String dataPathPrefix = "ThreadsDataSource/data_";
         String dataPathSuffix = ".json";
-        int dataNum=15;
         int count=0;
         for(int i=1;i<=dataNum;i++){
             String dataPath = dataPathPrefix + i + dataPathSuffix;
@@ -43,27 +50,45 @@ public class ThreadDataService {
             if(file.exists()){
                 String jsonData = new String(Files.readAllBytes(Paths.get(dataPath)));
                 JSONObject jsonObject= JSONUtil.parseObj(jsonData);
-                JSONArray itemsArray=jsonObject.getJSONArray("items");
-                for(int j=0;j< itemsArray.size();j++){
+                JSONArray itemsTopArray =jsonObject.getJSONArray("items");
+                for(int j = 0; j< itemsTopArray.size(); j++){
+                    JSONObject itemQuestion= itemsTopArray.getJSONObject(j);
                     count++;
-                    ThreadsData threadsData=new ThreadsData((JSONObject) itemsArray.get(j));
-                    threadRepository.save(threadsData);
+                    questionDataRepository.save(new QuestionData(itemQuestion));
+                    if(itemQuestion.get("answers")!=null){
+                        JSONArray itemsAnswerArray =itemQuestion.getJSONArray("answers");
+                        for(int k = 0; k< itemsAnswerArray.size(); k++){
+                            JSONObject itemAnswer= itemsAnswerArray.getJSONObject(k);
+                            answerDataRepository.save(new AnswerData(itemAnswer));
+                            checkCommentsAndSave(itemAnswer);
+                        }
+                    }
+                    checkCommentsAndSave(itemQuestion);
                 }
             }
         }
         return count;
     }
 
+    private void checkCommentsAndSave(JSONObject item) {
+        if(item.get("comments")!=null){
+            JSONArray itemsCommentArray = item.getJSONArray("comments");
+            for(int l = 0; l< itemsCommentArray.size(); l++){
+                JSONObject itemComment= itemsCommentArray.getJSONObject(l);
+                commentDataRepository.save(new CommentData(itemComment));
+            }
+        }
+    }
 
 
     public void deleteAll() {
-        threadRepository.deleteAll();
+        questionDataRepository.deleteAll();
     }
     public HashMap<String,Integer> getAllTheTags(){
         TagsUtil tagsUtil=new TagsUtil();
         HashMap<String,Integer>checkTags=new HashMap<>();
-        for(ThreadsData threadsData:getAllThreadData()){
-            String tags=threadsData.getTags();
+        for(QuestionData questionData :getAllThreadData()){
+            String tags= questionData.getTags();
             if(tags!=null){
                 String[]tagArray=TagsUtil.getTagsArray(tags);
                 for(String tag:tagArray){
@@ -77,9 +102,10 @@ public class ThreadDataService {
         }
         return checkTags;
     }
-    public List<ThreadsData>getInterestingData(){
-        List<ThreadsData>allData=getAllThreadData();
-        List<ThreadsData>interestingData=new ArrayList<>();
+
+    public List<QuestionData>getInterestingData(){
+        List<QuestionData>allData=getAllThreadData();
+        List<QuestionData>interestingData=new ArrayList<>();
         for(int i=0;i<allData.size();i++){
             for(int j=0;j<TagsUtil.interestingTags.length;j++){
                 if(allData.get(i).getTags().contains("\""+TagsUtil.interestingTags[j]+"\"")){
@@ -95,13 +121,13 @@ public class ThreadDataService {
         for(int i=0;i<TagsUtil.interestingTags.length;i++){
             interestingDataViewCount.put(TagsUtil.interestingTags[i],0L);
         }
-        for(ThreadsData threadsData:getInterestingData()){
-            String tags=threadsData.getTags();
+        for(QuestionData questionData :getInterestingData()){
+            String tags= questionData.getTags();
             if(tags!=null){
                 String[]tagArray=TagsUtil.getTagsArray(tags);
                 for(String tag:tagArray){
                     if(interestingDataViewCount.containsKey(tag)){
-                        interestingDataViewCount.put(tag,interestingDataViewCount.get(tag)+threadsData.getView_count());
+                        interestingDataViewCount.put(tag,interestingDataViewCount.get(tag)+ questionData.getView_count());
                     }
                 }
             }

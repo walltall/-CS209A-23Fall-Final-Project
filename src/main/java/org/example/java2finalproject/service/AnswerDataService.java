@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 import org.example.java2finalproject.GetUrlData;
 import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.entity.AnswerData;
-import org.example.java2finalproject.entity.ThreadsData;
+import org.example.java2finalproject.entity.QuestionData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,41 +20,9 @@ import java.util.List;
 public class AnswerDataService {
     @Autowired
     AnswerDataRepository answerDataRepository;
-    @Autowired
-    ThreadDataService threadDataService;
-    public boolean getAnswerData(){
-        //先去网上爬数据
-        List<ThreadsData> allData=threadDataService.getAllThreadData();
-        String urlPrefix="https://api.stackexchange.com/2.3/questions/";
-        String urlSuffix="/answers?order=desc&sort=activity&site=stackoverflow";
-        for(int i=85;i<allData.size();i++){
-            String url=urlPrefix+allData.get(i).getQuestion_id()+urlSuffix;
-            GetUrlData.getUrlData(url,i);
-        }
-        return true;
 
-    }
-    public int loadAnswerData()throws IOException {
-        String dataPathPrefix = "AnswerDataSource/data_";
-        String dataPathSuffix = ".json";
-        int dataNum=84;
-        int count=0;
-        for(int i=0;i<=dataNum;i++){
-            String dataPath = dataPathPrefix + i + dataPathSuffix;
-            File file = new File(dataPath);
-            if(file.exists()){
-                String jsonData = new String(Files.readAllBytes(Paths.get(dataPath)));
-                JSONObject jsonObject= JSONUtil.parseObj(jsonData);
-                JSONArray itemsArray=jsonObject.getJSONArray("items");
-                for(int j=0;j< itemsArray.size();j++){
-                    count++;
-                    AnswerData answerData =new AnswerData((JSONObject) itemsArray.get(j));
-                    answerDataRepository.save(answerData);
-                }
-            }
-        }
-        return count;
-    }
+
+
     public List<AnswerData>getAllAnswerData(){
         return answerDataRepository.findAll();
     }

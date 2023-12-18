@@ -1,7 +1,7 @@
 package org.example.java2finalproject.controller;
 
 import org.example.java2finalproject.common.NumCountObject;
-import org.example.java2finalproject.entity.ThreadsData;
+import org.example.java2finalproject.entity.QuestionData;
 import org.example.java2finalproject.service.AnswerDataService;
 import org.example.java2finalproject.service.ThreadDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class ThreadsDataController {
     private AnswerDataService answerDataService;
     @GetMapping("/importDataToDatabase")
     public Result importDataToDatabase() throws IOException {
-        int count=threadDataService.loadData();
+        int count=threadDataService.loadData(14);
         return Result.success("已导入"+count+"条数据");
     }
     @GetMapping("/getThreadDataFromTheWeb")
@@ -33,11 +33,7 @@ public class ThreadsDataController {
         }
         else return Result.fail(t);
     }
-    @GetMapping("/loadAnswerData")
-    public Result loadAnswerData() throws IOException {
-        int count=answerDataService.loadAnswerData();
-        return Result.success("已导入"+count+"条数据");
-    }
+//
 
     @GetMapping("/getAllData")
     public Result getAllData() {
@@ -75,7 +71,7 @@ public class ThreadsDataController {
     }
     @GetMapping("/checkInterestingData")
     public Result checkInterestingData() {
-        List<ThreadsData> ans=threadDataService.getInterestingData();
+        List<QuestionData> ans=threadDataService.getInterestingData();
         return Result.success(ans);
     }
     @GetMapping("/checkInterestingDataViewCount")
@@ -90,10 +86,10 @@ public class ThreadsDataController {
     }
     @GetMapping("/answerRate")
     public Result answerRate() {
-        List<ThreadsData>threadsData=threadDataService.getAllThreadData();
+        List<QuestionData> questionData =threadDataService.getAllThreadData();
         int count=0;
-        for(int i=0;i<threadsData.size();i++){
-            if(threadsData.get(i).is_answered()){
+        for(int i = 0; i< questionData.size(); i++){
+            if(questionData.get(i).is_answered()){
                 count++;
             }
         }
