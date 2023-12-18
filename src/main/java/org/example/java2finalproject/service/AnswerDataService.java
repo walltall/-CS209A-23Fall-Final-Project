@@ -3,8 +3,7 @@ package org.example.java2finalproject.service;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import lombok.Setter;
-import org.example.java2finalproject.GetAnswerData;
+import org.example.java2finalproject.GetUrlData;
 import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.entity.AnswerData;
 import org.example.java2finalproject.entity.ThreadsData;
@@ -30,7 +29,7 @@ public class AnswerDataService {
         String urlSuffix="/answers?order=desc&sort=activity&site=stackoverflow";
         for(int i=85;i<allData.size();i++){
             String url=urlPrefix+allData.get(i).getQuestion_id()+urlSuffix;
-            GetAnswerData.getUrlData(url,i);
+            GetUrlData.getUrlData(url,i);
         }
         return true;
 
@@ -56,4 +55,13 @@ public class AnswerDataService {
         }
         return count;
     }
+    public List<AnswerData>getAllAnswerData(){
+        return answerDataRepository.findAll();
+    }
+//    public AnswerData getAnswerDataByAnswerId(Long answerId){
+//        return answerDataRepository.findByAnswer_id(answerId);
+//    }
+//    public List<AnswerData>getAnswerDataByQuestionId(Long questionId){
+//        return answerDataRepository.findByQuestion_id(questionId);
+//    }
 }

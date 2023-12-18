@@ -5,13 +5,11 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.TagsUtil;
-import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.dao.ThreadRepository;
-import org.example.java2finalproject.entity.AnswerData;
 import org.example.java2finalproject.entity.ThreadsData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.example.java2finalproject.GetAnswerData;
+import org.example.java2finalproject.GetUrlData;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -132,6 +130,19 @@ public class ThreadDataService {
         return getInterestingDataAverageViewCount;
     }
 
+    public boolean getThreadsDataFromWeb(){
+        //先去网上爬数据
+        ///2.3/questions?page=1&pagesize=80&fromdate=1672531200&todate=1701388800&order=desc&sort=activity&tagged=java&site=stackoverflow&filter=!9MyMg2q4M.IhkHGnmFKa3xqNMdX)5ZKbrlzn8GdMwwBDKb6BWXZRlcH
+        String urlPrefix="https://api.stackexchange.com/2.3/questions?";
+        String pageParam="page=1";
+        String pagesizeParam="pagesize=700";
+        String urlSuffix="&fromdate=1672531200&todate=1701388800&order=desc&sort=activity&tagged=java&site=stackoverflow&filter=!9MyMg2q4M.IhkHGnmFKa3xqNMdX)5ZKbrlzn8GdMwwBDKb6BWXZRlcH";
+        String url=urlPrefix+pageParam+pagesizeParam+urlSuffix;
+        GetUrlData.getUrlData(url,1);
+
+        return true;
+
+    }
 
 
 

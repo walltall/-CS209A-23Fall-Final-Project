@@ -1,8 +1,6 @@
 package org.example.java2finalproject.controller;
 
 import org.example.java2finalproject.common.NumCountObject;
-import org.example.java2finalproject.common.TagsUtil;
-import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.entity.ThreadsData;
 import org.example.java2finalproject.service.AnswerDataService;
 import org.example.java2finalproject.service.ThreadDataService;
@@ -12,7 +10,6 @@ import org.example.java2finalproject.common.Result;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,9 +25,9 @@ public class ThreadsDataController {
         int count=threadDataService.loadData();
         return Result.success("已导入"+count+"条数据");
     }
-    @GetMapping("/getAnswerDataFromTheWeb")
-    public Result getAnswerData() {
-        boolean t=answerDataService.getAnswerData();
+    @GetMapping("/getThreadDataFromTheWeb")
+    public Result getThreadData() {
+        boolean t= threadDataService.getThreadsDataFromWeb();
         return Result.success(t);
     }
     @GetMapping("/loadAnswerData")
@@ -89,7 +86,7 @@ public class ThreadsDataController {
         return Result.success(ans);
     }
     @GetMapping("/answerRate")
-    public Result  answerRate() {
+    public Result answerRate() {
         List<ThreadsData>threadsData=threadDataService.getAllThreadData();
         int count=0;
         for(int i=0;i<threadsData.size();i++){
@@ -99,5 +96,6 @@ public class ThreadsDataController {
         }
         return Result.success(count);
     }
+
 
 }
