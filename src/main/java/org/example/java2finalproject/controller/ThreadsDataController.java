@@ -27,8 +27,11 @@ public class ThreadsDataController {
     }
     @GetMapping("/getThreadDataFromTheWeb")
     public Result getThreadData() {
-        boolean t= threadDataService.getThreadsDataFromWeb();
-        return Result.success(t);
+        boolean t= threadDataService.getThreadsDataFromWeb(15,80);
+        if(t) {
+            return Result.success(t);
+        }
+        else return Result.fail(t);
     }
     @GetMapping("/loadAnswerData")
     public Result loadAnswerData() throws IOException {

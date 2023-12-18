@@ -14,7 +14,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class GetUrlData {
-    public static void getUrlData(String url,int num) {
+    public static boolean getUrlData(String url,int num) {
         try {
             URL apiUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
@@ -32,9 +32,13 @@ public class GetUrlData {
                 String filePath = "ThreadsDataSource/data_"+num+".json";
                 FileUtil.writeBytes(unzippedData, new File(filePath));
                 System.out.println("JSON数据已保存至：" + filePath);
+                return true;
+            }else {
+                return false;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

@@ -130,16 +130,23 @@ public class ThreadDataService {
         return getInterestingDataAverageViewCount;
     }
 
-    public boolean getThreadsDataFromWeb(){
+    public boolean getThreadsDataFromWeb(int pageNum,int pageSize){
         //先去网上爬数据
         ///2.3/questions?page=1&pagesize=80&fromdate=1672531200&todate=1701388800&order=desc&sort=activity&tagged=java&site=stackoverflow&filter=!9MyMg2q4M.IhkHGnmFKa3xqNMdX)5ZKbrlzn8GdMwwBDKb6BWXZRlcH
+        String pagesizeParam="&pagesize=";
         String urlPrefix="https://api.stackexchange.com/2.3/questions?";
-        String pageParam="page=1";
-        String pagesizeParam="pagesize=700";
         String urlSuffix="&fromdate=1672531200&todate=1701388800&order=desc&sort=activity&tagged=java&site=stackoverflow&filter=!9MyMg2q4M.IhkHGnmFKa3xqNMdX)5ZKbrlzn8GdMwwBDKb6BWXZRlcH";
-        String url=urlPrefix+pageParam+pagesizeParam+urlSuffix;
-        GetUrlData.getUrlData(url,1);
 
+        pagesizeParam=pagesizeParam+pageSize;
+        for(int i=1;i<=pageNum;i++){
+            String pageParam="&page=";
+            pageParam+=i;
+            String url=urlPrefix+pageParam+pagesizeParam+urlSuffix;
+            boolean result=GetUrlData.getUrlData(url,i);
+            if(!result){
+                return false;
+            }
+        }
         return true;
 
     }
