@@ -33,12 +33,12 @@ public class ThreadDataService {
     public Optional<QuestionData> getQuestionData(long question_Id) {
         return questionDataRepository.findById(question_Id);
     }
-    public List<QuestionData>getAllThreadData() {
+    public List<QuestionData> getAllQuestionData() {
         List<QuestionData> allData = questionDataRepository.findAll();
-        allData.sort(Comparator.comparingLong(QuestionData::getQuestion_id));
+        allData.sort(Comparator.comparingLong(QuestionData::getQuestionId));
         return allData;
     }
-    public QuestionData createThreadData(QuestionData threadData) {
+    public QuestionData createQuestionData(QuestionData threadData) {
         return questionDataRepository.save(threadData);
     }
     public int loadData(int dataNum) throws IOException {
@@ -88,7 +88,7 @@ public class ThreadDataService {
     public HashMap<String,Integer> getAllTheTags(){
         TagsUtil tagsUtil=new TagsUtil();
         HashMap<String,Integer>checkTags=new HashMap<>();
-        for(QuestionData questionData :getAllThreadData()){
+        for(QuestionData questionData : getAllQuestionData()){
             String tags= questionData.getTags();
             if(tags!=null){
                 String[]tagArray=TagsUtil.getTagsArray(tags);
@@ -105,7 +105,7 @@ public class ThreadDataService {
     }
 
     public List<QuestionData>getInterestingData(){
-        List<QuestionData>allData=getAllThreadData();
+        List<QuestionData>allData= getAllQuestionData();
         List<QuestionData>interestingData=new ArrayList<>();
         for(int i=0;i<allData.size();i++){
             for(int j=0;j<TagsUtil.interestingTags.length;j++){
@@ -128,7 +128,7 @@ public class ThreadDataService {
                 String[]tagArray=TagsUtil.getTagsArray(tags);
                 for(String tag:tagArray){
                     if(interestingDataViewCount.containsKey(tag)){
-                        interestingDataViewCount.put(tag,interestingDataViewCount.get(tag)+ questionData.getView_count());
+                        interestingDataViewCount.put(tag,interestingDataViewCount.get(tag)+ questionData.getViewCount());
                     }
                 }
             }
@@ -176,61 +176,83 @@ public class ThreadDataService {
         }
         return true;
     }
-    public boolean[] errorsMatcher(QuestionData questionData){
-        boolean[]res=new boolean[3];
+    //用于判断一个ThreadData中，是否包含三大错误类别
+    public HashMap<String,Boolean> errorsMatcher(QuestionData questionData){
+        HashMap<String,Boolean>res=new HashMap<>();
         ErrorsClassify errorsClassify=new ErrorsClassify();
-        if(questionData.is_answered()){
-            List<AnswerData> answerDataList =answerDataRepository.findByQuestion_id(questionData.getQuestion_id());
+        if(questionData.isAnswered()){
+            List<AnswerData> answerDataList =answerDataRepository.findByQuestion_id(questionData.getQuestionId());
             loop:for(int i = 0; i< answerDataList.size(); i++){
                 List<CommentData> commentDataList =
                         commentDataRepository.findCommentDataByPost_idAndPost_type
-                                (answerDataList.get(i).getAnswer_id(),AnswerData.type);
+                                (answerDataList.get(i).getAnswerId(),AnswerData.type);
                 for(int j = 0; j< commentDataList.size(); j++){
                     if(errorsClassify.CommentSyntaxErrorMatch(commentDataList.get(j))){
-                        res[0]=true;
+                        res.put(ErrorsClassify.SyntaxErrorName,true);
                     }
                     if(errorsClassify.CommentFatalErrorMatch(commentDataList.get(j))){
-                        res[1]=true;
+                        res.put(ErrorsClassify.FatalErrorName,true);
                     }
                     if(errorsClassify.CommentExceptionMatch(commentDataList.get(j))){
-                        res[2]=true;
+                        res.put(ErrorsClassify.ExceptionErrorName,true);
                     }
                 }
                 if(errorsClassify.AnswerSyntaxErrorMatch(answerDataList.get(i))){
-                    res[0]=true;
+                    res.put(ErrorsClassify.SyntaxErrorName,true);
                 }
                 if(errorsClassify.AnswerFatalErrorMatch(answerDataList.get(i))){
-                    res[1]=true;
+                    res.put(ErrorsClassify.FatalErrorName,true);
                 }
                 if(errorsClassify.AnswerExceptionMatch(answerDataList.get(i))){
-                    res[2]=true;
+                    res.put(ErrorsClassify.ExceptionErrorName,true);
                 }
             }
         }
         List<CommentData> commentDataList =
                 commentDataRepository.findCommentDataByPost_idAndPost_type
-                        (questionData.getQuestion_id(),QuestionData.type);
+                        (questionData.getQuestionId(),QuestionData.type);
         for(int j = 0; j< commentDataList.size(); j++){
             if(errorsClassify.CommentSyntaxErrorMatch(commentDataList.get(j))){
-                res[0]=true;
+                res.put(ErrorsClassify.SyntaxErrorName,true);
             }
             if(errorsClassify.CommentFatalErrorMatch(commentDataList.get(j))){
-                res[1]=true;
+                res.put(ErrorsClassify.FatalErrorName,true);
             }
             if(errorsClassify.CommentExceptionMatch(commentDataList.get(j))){
-                res[2]=true;
+                res.put(ErrorsClassify.ExceptionErrorName,true);
             }
         }
         if(errorsClassify.QuestionSyntaxErrorMatch(questionData)){
-            res[0]=true;
+            res.put(ErrorsClassify.SyntaxErrorName,true);
         }
         if(errorsClassify.QuestionFatalErrorMatch(questionData)){
-            res[1]=true;
+            res.put(ErrorsClassify.FatalErrorName,true);
         }
         if(errorsClassify.QuestionExceptionMatch(questionData)){
-            res[2]=true;
+            res.put(ErrorsClassify.ExceptionErrorName,true);
         }
         return res;
+    }
+    //用于查询所有的ThreadData内，包含的错误情况：
+    public HashMap<String,Integer> getDifferentErrorNumber(){
+        List<QuestionData> questionDataList= getAllQuestionData();
+        HashMap<String,Integer> bugNumWithinCategory=new HashMap<>();
+        bugNumWithinCategory.put(ErrorsClassify.SyntaxErrorName,0);
+        bugNumWithinCategory.put(ErrorsClassify.FatalErrorName,0);
+        bugNumWithinCategory.put(ErrorsClassify.ExceptionErrorName,0);
+        for(int i=0;i<questionDataList.size();i++){
+            HashMap<String,Boolean>errors=errorsMatcher(questionDataList.get(i));
+            bugNumWithinCategory.put(ErrorsClassify.SyntaxErrorName,
+                    bugNumWithinCategory.get(ErrorsClassify.SyntaxErrorName)+
+                            (errors.get(ErrorsClassify.SyntaxErrorName)?1:0));
+            bugNumWithinCategory.put(ErrorsClassify.FatalErrorName,
+                    bugNumWithinCategory.get(ErrorsClassify.FatalErrorName)+
+                            (errors.get(ErrorsClassify.FatalErrorName)?1:0));
+            bugNumWithinCategory.put(ErrorsClassify.ExceptionErrorName,
+                    bugNumWithinCategory.get(ErrorsClassify.ExceptionErrorName)+
+                            (errors.get(ErrorsClassify.ExceptionErrorName)?1:0));
+        }
+        return bugNumWithinCategory;
     }
 
 

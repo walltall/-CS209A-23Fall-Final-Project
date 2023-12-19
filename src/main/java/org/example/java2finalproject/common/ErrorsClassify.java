@@ -11,6 +11,9 @@ public class ErrorsClassify {
 //    public static final int SyntaxError = 1;
 //    public static final int FatalError = 2;
 //    public static final int ExceptionError = 3;
+    public static String SyntaxErrorName = "SyntaxError";
+    public static String FatalErrorName = "FatalError";
+    public static String ExceptionErrorName = "ExceptionError";
     private final String regexSyntaxError =
              "(error:|SyntaxError)\\s*([^\\n]+(?:\\n(?!\\n).+)*)";
     private final String regexFatalError =
@@ -23,6 +26,7 @@ public class ErrorsClassify {
                     "ClassCastException|NegativeArraySizeException|ArrayStoreException|" +
                     "IllegalThreadStateException|IllegalMonitorStateException|" +
                     "NumberFormatException|IllegalStateException)";
+
     private final String regexException =
             " (IOException|SQLException|FileNotFoundException|" +
                     "NullPointerException|ArrayIndexOutOfBoundsException|IllegalArgumentException|" +
@@ -48,36 +52,36 @@ public class ErrorsClassify {
         return a.find();
     }
     public boolean CommentSyntaxErrorMatch(CommentData commentData){
-        return SyntaxErrorMatch(commentData.getBody())||SyntaxErrorMatch(commentData.getBody_markdown());
+        return SyntaxErrorMatch(commentData.getBody())||SyntaxErrorMatch(commentData.getBodyMarkdown());
     }
     public boolean CommentFatalErrorMatch(CommentData commentData){
-        return FatalErrorMatch(commentData.getBody())||FatalErrorMatch(commentData.getBody_markdown());
+        return FatalErrorMatch(commentData.getBody())||FatalErrorMatch(commentData.getBodyMarkdown());
     }
     public boolean CommentExceptionMatch(CommentData commentData){
-        return ExceptionMatch(commentData.getBody())||ExceptionMatch(commentData.getBody_markdown());
+        return ExceptionMatch(commentData.getBody())||ExceptionMatch(commentData.getBodyMarkdown());
     }
     public boolean QuestionSyntaxErrorMatch(QuestionData questionData){
-        return SyntaxErrorMatch(questionData.getBody())||SyntaxErrorMatch(questionData.getBody_markdown())
+        return SyntaxErrorMatch(questionData.getBody())||SyntaxErrorMatch(questionData.getBodyMarkdown())
                 ||SyntaxErrorMatch(questionData.getTitle());
     }
     public boolean QuestionFatalErrorMatch(QuestionData questionData){
-        return FatalErrorMatch(questionData.getBody())||FatalErrorMatch(questionData.getBody_markdown())
+        return FatalErrorMatch(questionData.getBody())||FatalErrorMatch(questionData.getBodyMarkdown())
                 ||FatalErrorMatch(questionData.getTitle());
     }
     public boolean QuestionExceptionMatch(QuestionData questionData){
-        return ExceptionMatch(questionData.getBody())||ExceptionMatch(questionData.getBody_markdown())
+        return ExceptionMatch(questionData.getBody())||ExceptionMatch(questionData.getBodyMarkdown())
                 ||ExceptionMatch(questionData.getTitle());
     }
     public boolean AnswerSyntaxErrorMatch(AnswerData answerData){
-        return SyntaxErrorMatch(answerData.getBody())||SyntaxErrorMatch(answerData.getBody_markdown())
+        return SyntaxErrorMatch(answerData.getBody())||SyntaxErrorMatch(answerData.getBodyMarkdown())
                 ||SyntaxErrorMatch(answerData.getTitle());
     }
     public boolean AnswerFatalErrorMatch(AnswerData answerData){
-        return FatalErrorMatch(answerData.getBody())||FatalErrorMatch(answerData.getBody_markdown())
+        return FatalErrorMatch(answerData.getBody())||FatalErrorMatch(answerData.getBodyMarkdown())
                 ||FatalErrorMatch(answerData.getTitle());
     }
     public boolean AnswerExceptionMatch(AnswerData answerData){
-        return ExceptionMatch(answerData.getBody())||ExceptionMatch(answerData.getBody_markdown())
+        return ExceptionMatch(answerData.getBody())||ExceptionMatch(answerData.getBodyMarkdown())
                 ||ExceptionMatch(answerData.getTitle());
     }
 

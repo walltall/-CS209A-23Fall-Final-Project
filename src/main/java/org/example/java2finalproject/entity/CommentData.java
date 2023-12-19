@@ -10,19 +10,19 @@ import lombok.Getter;
 @Entity
 public class CommentData {
     @Id
-    private long comment_id=-1L;
+    private long commentId =-1L;
     @Getter
     private int score;
     @Getter
-    private String post_type="";
+    private String postType ="";
     @Getter
-    private long creation_date=0L;
+    private long creationDate =0L;
     @Getter
-    private long post_id=0L;
+    private long postId =0L;
     @Getter
     @Lob
     @Column(columnDefinition="TEXT")
-    private String body_markdown="";
+    private String bodyMarkdown ="";
     @Getter
     private String link="";
     @Getter
@@ -30,12 +30,12 @@ public class CommentData {
     @Column(columnDefinition="TEXT")
     private String body="";
     public CommentData(JSONObject jsonObject){
-        this.comment_id = jsonObject.getLong("comment_id");
+        this.commentId = jsonObject.getLong("comment_id");
         this.score = jsonObject.getInt("score");
-        this.post_type = jsonObject.getStr("post_type");
-        this.creation_date = jsonObject.getLong("creation_date");
-        this.post_id = jsonObject.getLong("post_id");
-        this.body_markdown = jsonObject.getStr("body_markdown");
+        this.postType = jsonObject.getStr("post_type");
+        this.creationDate = jsonObject.getLong("creation_date");
+        this.postId = jsonObject.getLong("post_id");
+        this.bodyMarkdown = jsonObject.getStr("body_markdown");
         this.link = jsonObject.getStr("link");
         this.body = jsonObject.getStr("body");
     }

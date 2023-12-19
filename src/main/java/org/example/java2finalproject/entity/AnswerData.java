@@ -3,28 +3,26 @@ package org.example.java2finalproject.entity;
 import cn.hutool.json.JSONObject;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 @Getter
 @Entity
 public class AnswerData {
    @Id
-   private long answer_id;
+   private long answerId;
    @Getter
-   private long comment_count;
+   private long commentCount;
    @Getter
    private int score;
    @Getter
-   private long last_activity_date;
+   private long lastActivityDate;
    @Getter
-   private long creation_date;
+   private long creationDate;
    @Getter
-   private long question_id;
+   private long questionId;
    @Getter
    @Lob
    @Column(columnDefinition="TEXT")
-   private String body_markdown;
+   private String bodyMarkdown;
    @Getter
    private String link;
    @Getter
@@ -39,13 +37,13 @@ public class AnswerData {
 
 
     public AnswerData(JSONObject jsonObject){
-        this.answer_id=jsonObject.getLong("answer_id");
-        this.comment_count=jsonObject.getLong("comment_count");
+        this.answerId =jsonObject.getLong("answerId");
+        this.commentCount =jsonObject.getLong("commentCount");
         this.score=jsonObject.getInt("score");
-        this.last_activity_date=jsonObject.getLong("last_activity_date");
-        this.creation_date=jsonObject.getLong("creation_date");
-        this.question_id=jsonObject.getLong("question_id");
-        this.body_markdown=jsonObject.getStr("body_markdown");
+        this.lastActivityDate =jsonObject.getLong("lastActivityDate");
+        this.creationDate =jsonObject.getLong("creation_date");
+        this.questionId =jsonObject.getLong("questionId");
+        this.bodyMarkdown =jsonObject.getStr("body_markdown");
         this.link=jsonObject.getStr("link");
         this.title=jsonObject.getStr("title");
         this.body=jsonObject.getStr("body");

@@ -38,7 +38,7 @@ public class ThreadsDataController {
 
     @GetMapping("/getAllData")
     public Result getAllData() {
-        return Result.success(threadDataService.getAllThreadData());
+        return Result.success(threadDataService.getAllQuestionData());
     }
     @DeleteMapping("/deleteAllData")
     public Result deleteAllData() {
@@ -87,10 +87,10 @@ public class ThreadsDataController {
     }
     @GetMapping("/answerRate")
     public Result answerRate() {
-        List<QuestionData> questionData =threadDataService.getAllThreadData();
+        List<QuestionData> questionData =threadDataService.getAllQuestionData();
         int count=0;
         for(int i = 0; i< questionData.size(); i++){
-            if(questionData.get(i).is_answered()){
+            if(questionData.get(i).isAnswered()){
                 count++;
             }
         }
@@ -107,7 +107,7 @@ public class ThreadsDataController {
             for(int j=0;j<questionData.size();j++){
                 if(questionData.get(j).getTags().contains(TagsUtil.interestingTags[i])){
                     interestingMap.put(TagsUtil.interestingTags[i], interestingMap.getOrDefault(TagsUtil.interestingTags[i],0)+1);
-                    if(questionData.get(j).is_answered()){
+                    if(questionData.get(j).isAnswered()){
                         resRate.put(TagsUtil.interestingTags[i],resRate.getOrDefault(TagsUtil.interestingTags[i],0.0)+1.0);
                     }
                 }
@@ -123,6 +123,11 @@ public class ThreadsDataController {
             ans.put(key,resRate.get(key)+"%");
         }
         return Result.success(ans);
+    }
+
+    @GetMapping("/getDifferentErrorNumber")
+    public Result getDifferentErrorNumber() {
+        return Result.success(threadDataService.getDifferentErrorNumber());
     }
 
 

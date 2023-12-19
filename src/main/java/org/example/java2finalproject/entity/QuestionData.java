@@ -3,35 +3,34 @@ package org.example.java2finalproject.entity;
 import cn.hutool.json.JSONObject;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 public class QuestionData {
     @Id
     @Getter
-    private long question_id=-1;
+    private long questionId =-1;
     @Getter
     private String tags="";
     @Getter
-    private int comment_count=0;
+    private int commentCount =0;
     @Getter
-    private boolean is_answered=false;
+    private boolean isAnswered =false;
     @Getter
-    private long view_count=0;
+    private long viewCount =0;
     @Getter
-    private long answer_count=0;
+    private long answerCount =0;
     @Getter
     private int score=0;
     @Getter
-    private long last_activity_date=0;
+    private long lastActivityDate =0;
     @Getter
-    private long creation_date=0;
+    private long creationDate =0;
     @Getter
-    private long last_edit_date=0;
+    private long lastEditDate =0;
     @Getter
     @Lob
     @Column(columnDefinition="TEXT")
-    private String body_markdown;
+    private String bodyMarkdown;
     @Getter
     private String link;
     @Getter
@@ -41,29 +40,29 @@ public class QuestionData {
     @Column(columnDefinition="TEXT")
     private String body;
     @Getter
-    private long bounty_amount=0;
+    private long bountyAmount =0;
 
     @Transient
     public static final String type="question";
     public QuestionData(JSONObject jsonObject){
-        this.question_id=jsonObject.getLong("question_id");
+        this.questionId =jsonObject.getLong("question_id");
         this.tags=jsonObject.getStr("tags");
-        this.comment_count=jsonObject.getInt("comment_count");
-        this.is_answered=jsonObject.getBool("is_answered");
-        this.view_count=jsonObject.getLong("view_count");
-        this.answer_count=jsonObject.getLong("answer_count");
+        this.commentCount =jsonObject.getInt("comment_count");
+        this.isAnswered =jsonObject.getBool("is_answered");
+        this.viewCount =jsonObject.getLong("view_count");
+        this.answerCount =jsonObject.getLong("answer_count");
         this.score=jsonObject.getInt("score");
-        this.last_activity_date=jsonObject.getLong("last_activity_date");
-        this.creation_date=jsonObject.getLong("creation_date");
+        this.lastActivityDate =jsonObject.getLong("last_activity_date");
+        this.creationDate =jsonObject.getLong("creation_date");
         if(jsonObject.containsKey("last_edit_date")){
-            this.last_edit_date=jsonObject.getLong("last_edit_date");
+            this.lastEditDate =jsonObject.getLong("last_edit_date");
         }
-        this.body_markdown=jsonObject.getStr("body_markdown");
+        this.bodyMarkdown =jsonObject.getStr("body_markdown");
         this.link=jsonObject.getStr("link");
         this.title=jsonObject.getStr("title");
         this.body=jsonObject.getStr("body");
         if(jsonObject.containsKey("bounty_amount")){
-            this.bounty_amount=jsonObject.getLong("bounty_amount");
+            this.bountyAmount =jsonObject.getLong("bounty_amount");
         }
     }
 

@@ -30,6 +30,6 @@ public class AnswerDataService {
 //        return answerDataRepository.findByAnswer_id(answerId);
 //    }
 //    public List<AnswerData>getAnswerDataByQuestionId(Long questionId){
-//        return answerDataRepository.findByQuestion_id(questionId);
+//        return answerDataRepository.findByQuestionId(questionId);
 //    }
 }
