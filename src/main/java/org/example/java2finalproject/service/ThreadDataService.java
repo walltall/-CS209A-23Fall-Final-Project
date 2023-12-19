@@ -4,6 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.example.java2finalproject.common.NumCountObject;
+import org.example.java2finalproject.common.ErrorsClassify;
 import org.example.java2finalproject.common.TagsUtil;
 import org.example.java2finalproject.dao.AnswerDataRepository;
 import org.example.java2finalproject.dao.CommentDataRepository;
@@ -175,8 +176,62 @@ public class ThreadDataService {
         }
         return true;
     }
-
-
+    public boolean[] errorsMatcher(QuestionData questionData){
+        boolean[]res=new boolean[3];
+        ErrorsClassify errorsClassify=new ErrorsClassify();
+        if(questionData.is_answered()){
+            List<AnswerData> answerDataList =answerDataRepository.findByQuestion_id(questionData.getQuestion_id());
+            loop:for(int i = 0; i< answerDataList.size(); i++){
+                List<CommentData> commentDataList =
+                        commentDataRepository.findCommentDataByPost_idAndPost_type
+                                (answerDataList.get(i).getAnswer_id(),AnswerData.type);
+                for(int j = 0; j< commentDataList.size(); j++){
+                    if(errorsClassify.CommentSyntaxErrorMatch(commentDataList.get(j))){
+                        res[0]=true;
+                    }
+                    if(errorsClassify.CommentFatalErrorMatch(commentDataList.get(j))){
+                        res[1]=true;
+                    }
+                    if(errorsClassify.CommentExceptionMatch(commentDataList.get(j))){
+                        res[2]=true;
+                    }
+                }
+                if(errorsClassify.AnswerSyntaxErrorMatch(answerDataList.get(i))){
+                    res[0]=true;
+                }
+                if(errorsClassify.AnswerFatalErrorMatch(answerDataList.get(i))){
+                    res[1]=true;
+                }
+                if(errorsClassify.AnswerExceptionMatch(answerDataList.get(i))){
+                    res[2]=true;
+                }
+            }
+        }
+        List<CommentData> commentDataList =
+                commentDataRepository.findCommentDataByPost_idAndPost_type
+                        (questionData.getQuestion_id(),QuestionData.type);
+        for(int j = 0; j< commentDataList.size(); j++){
+            if(errorsClassify.CommentSyntaxErrorMatch(commentDataList.get(j))){
+                res[0]=true;
+            }
+            if(errorsClassify.CommentFatalErrorMatch(commentDataList.get(j))){
+                res[1]=true;
+            }
+            if(errorsClassify.CommentExceptionMatch(commentDataList.get(j))){
+                res[2]=true;
+            }
+        }
+        if(errorsClassify.QuestionSyntaxErrorMatch(questionData)){
+            res[0]=true;
+        }
+        if(errorsClassify.QuestionFatalErrorMatch(questionData)){
+            res[1]=true;
+        }
+        if(errorsClassify.QuestionExceptionMatch(questionData)){
+            res[2]=true;
+        }
+        return res;
+    }
 
 
 }

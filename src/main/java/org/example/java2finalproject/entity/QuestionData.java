@@ -42,6 +42,9 @@ public class QuestionData {
     private String body;
     @Getter
     private long bounty_amount=0;
+
+    @Transient
+    public static final String type="question";
     public QuestionData(JSONObject jsonObject){
         this.question_id=jsonObject.getLong("question_id");
         this.tags=jsonObject.getStr("tags");

@@ -34,6 +34,8 @@ public class AnswerData {
    @Column(columnDefinition="TEXT")
    private String body;
 
+   @Transient
+   public static final String type="answer";
 
 
     public AnswerData(JSONObject jsonObject){
@@ -52,4 +54,5 @@ public class AnswerData {
     public AnswerData() {
 
     }
+
 }

@@ -1,5 +1,8 @@
 package org.example.java2finalproject.common;
 
+import org.example.java2finalproject.entity.CommentData;
+import org.example.java2finalproject.entity.QuestionData;
+import org.example.java2finalproject.entity.AnswerData;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,15 +35,54 @@ public class ErrorsClassify {
     private Pattern patternSyntaxError = Pattern.compile(regexSyntaxError, Pattern.CASE_INSENSITIVE);
     private Pattern patternFatalError = Pattern.compile(regexFatalError, Pattern.CASE_INSENSITIVE);
     private Pattern patternException = Pattern.compile(regexException, Pattern.CASE_INSENSITIVE);
-    public Matcher SyntaxErrorMatch(String article){
-        return patternSyntaxError.matcher(article);
+    public boolean SyntaxErrorMatch(String article){
+        Matcher a=patternSyntaxError.matcher(article);
+        return a.find();
     }
-    public Matcher FatalErrorMatch(String article){
-        return patternFatalError.matcher(article);
+    public boolean FatalErrorMatch(String article){
+        Matcher a=patternFatalError.matcher(article);
+        return a.find();
     }
-    public Matcher ExceptionMatch(String article){
-        return patternException.matcher(article);
+    public boolean ExceptionMatch(String article){
+        Matcher a=patternException.matcher(article);
+        return a.find();
     }
+    public boolean CommentSyntaxErrorMatch(CommentData commentData){
+        return SyntaxErrorMatch(commentData.getBody())||SyntaxErrorMatch(commentData.getBody_markdown());
+    }
+    public boolean CommentFatalErrorMatch(CommentData commentData){
+        return FatalErrorMatch(commentData.getBody())||FatalErrorMatch(commentData.getBody_markdown());
+    }
+    public boolean CommentExceptionMatch(CommentData commentData){
+        return ExceptionMatch(commentData.getBody())||ExceptionMatch(commentData.getBody_markdown());
+    }
+    public boolean QuestionSyntaxErrorMatch(QuestionData questionData){
+        return SyntaxErrorMatch(questionData.getBody())||SyntaxErrorMatch(questionData.getBody_markdown())
+                ||SyntaxErrorMatch(questionData.getTitle());
+    }
+    public boolean QuestionFatalErrorMatch(QuestionData questionData){
+        return FatalErrorMatch(questionData.getBody())||FatalErrorMatch(questionData.getBody_markdown())
+                ||FatalErrorMatch(questionData.getTitle());
+    }
+    public boolean QuestionExceptionMatch(QuestionData questionData){
+        return ExceptionMatch(questionData.getBody())||ExceptionMatch(questionData.getBody_markdown())
+                ||ExceptionMatch(questionData.getTitle());
+    }
+    public boolean AnswerSyntaxErrorMatch(AnswerData answerData){
+        return SyntaxErrorMatch(answerData.getBody())||SyntaxErrorMatch(answerData.getBody_markdown())
+                ||SyntaxErrorMatch(answerData.getTitle());
+    }
+    public boolean AnswerFatalErrorMatch(AnswerData answerData){
+        return FatalErrorMatch(answerData.getBody())||FatalErrorMatch(answerData.getBody_markdown())
+                ||FatalErrorMatch(answerData.getTitle());
+    }
+    public boolean AnswerExceptionMatch(AnswerData answerData){
+        return ExceptionMatch(answerData.getBody())||ExceptionMatch(answerData.getBody_markdown())
+                ||ExceptionMatch(answerData.getTitle());
+    }
+
+
+
 
     
 }
