@@ -181,10 +181,10 @@ public class ThreadDataService {
         HashMap<String,Boolean>res=new HashMap<>();
         ErrorsClassify errorsClassify=new ErrorsClassify();
         if(questionData.isAnswered()){
-            List<AnswerData> answerDataList =answerDataRepository.findByQuestion_id(questionData.getQuestionId());
+            List<AnswerData> answerDataList =answerDataRepository.findByQuestionId(questionData.getQuestionId());
             loop:for(int i = 0; i< answerDataList.size(); i++){
                 List<CommentData> commentDataList =
-                        commentDataRepository.findCommentDataByPost_idAndPost_type
+                        commentDataRepository.findCommentDataByPostIdAndPostType
                                 (answerDataList.get(i).getAnswerId(),AnswerData.type);
                 for(int j = 0; j< commentDataList.size(); j++){
                     if(errorsClassify.CommentSyntaxErrorMatch(commentDataList.get(j))){
@@ -209,7 +209,7 @@ public class ThreadDataService {
             }
         }
         List<CommentData> commentDataList =
-                commentDataRepository.findCommentDataByPost_idAndPost_type
+                commentDataRepository.findCommentDataByPostIdAndPostType
                         (questionData.getQuestionId(),QuestionData.type);
         for(int j = 0; j< commentDataList.size(); j++){
             if(errorsClassify.CommentSyntaxErrorMatch(commentDataList.get(j))){

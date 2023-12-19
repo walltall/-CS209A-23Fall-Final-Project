@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CommentDataRepository extends JpaRepository<CommentData, Long> {
-    public List<CommentData>findCommentDataByPost_idAndPost_type(long post_id,String post_type);
+    public List<CommentData>findCommentDataByPostIdAndPostType(long post_id,String post_type);
 }

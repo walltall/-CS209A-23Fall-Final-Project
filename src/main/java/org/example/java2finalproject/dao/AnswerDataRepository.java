@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface AnswerDataRepository extends JpaRepository<AnswerData, Long> {
 //    public AnswerData findByAnswer_id(long answer_id);
-//    public List<AnswerData> findByQuestion_id(long question_id);
+    public List<AnswerData> findByQuestionId(long question_id);
 
 }
