@@ -22,20 +22,18 @@ public class ErrorsClassify {
                     "InternalError|UnsatisfiedLinkError|ExceptionInInitializerError|" +
                     "NoSuchMethodError|NoSuchFieldError|IllegalAccessError|" +
                     "AbstractMethodError|IncompatibleClassChangeError|UnsupportedClassVersionError|" +
-                    "ClassFormatError|BootstrapMethodError|ClassCircularityError|" +
-                    "ClassCastException|NegativeArraySizeException|ArrayStoreException|" +
-                    "IllegalThreadStateException|IllegalMonitorStateException|" +
-                    "NumberFormatException|IllegalStateException)";
+                    "ClassFormatError|BootstrapMethodError|ClassCircularityError)";
 
     private final String regexException =
-            " (IOException|SQLException|FileNotFoundException|" +
-                    "NullPointerException|ArrayIndexOutOfBoundsException|IllegalArgumentException|" +
-                    "NumberFormatException|ClassCastException|ArithmeticException|" +
+            " (IOException|SQLException|PSQLException|FileNotFoundException|" +
+                    "NullPointerException|ArrayIndexOutOfBoundsException|" +
+                    "ClassCastException|ArithmeticException|" +
                     "RuntimeException|IndexOutOfBoundsException|ConcurrentModificationException|" +
-                    "UnsupportedOperationException|IllegalStateException|" +
-                    "SecurityException|NoSuchElementException|NullPointerException|" +
-                    "RuntimeException|IllegalArgumentException|IllegalStateException|" +
-                    "IndexOutOfBoundsException)";
+                    "UnsupportedOperationException|" +
+                    "SecurityException|NoSuchElementException|IllegalArgumentException|" +
+                    "NegativeArraySizeException|ArrayStoreException|" +
+                    "IllegalThreadStateException|IllegalMonitorStateException|" +
+                    "NumberFormatException|IllegalStateException)";
     private Pattern patternSyntaxError = Pattern.compile(regexSyntaxError, Pattern.CASE_INSENSITIVE);
     private Pattern patternFatalError = Pattern.compile(regexFatalError, Pattern.CASE_INSENSITIVE);
     private Pattern patternException = Pattern.compile(regexException, Pattern.CASE_INSENSITIVE);

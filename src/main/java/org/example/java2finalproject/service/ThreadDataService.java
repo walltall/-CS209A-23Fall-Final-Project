@@ -179,6 +179,9 @@ public class ThreadDataService {
     //用于判断一个ThreadData中，是否包含三大错误类别
     public HashMap<String,Boolean> errorsMatcher(QuestionData questionData){
         HashMap<String,Boolean>res=new HashMap<>();
+        res.put(ErrorsClassify.SyntaxErrorName,false);
+        res.put(ErrorsClassify.FatalErrorName,false);
+        res.put(ErrorsClassify.ExceptionErrorName,false);
         ErrorsClassify errorsClassify=new ErrorsClassify();
         if(questionData.isAnswered()){
             List<AnswerData> answerDataList =answerDataRepository.findByQuestionId(questionData.getQuestionId());
