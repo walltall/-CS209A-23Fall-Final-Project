@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.junit.jupiter.api.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // check the difference for variable b by uncommenting this annotation
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS) // check the difference for variable b by uncommenting this annotation
 class StandardTests {
 
     static int a = 100;
