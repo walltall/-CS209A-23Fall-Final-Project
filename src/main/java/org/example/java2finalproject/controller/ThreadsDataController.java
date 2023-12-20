@@ -141,6 +141,11 @@ public class ThreadsDataController {
         HashMap<String,Integer> ans=threadDataService.getAimedErrorNumber(ErrorsClassify.ExceptionArray);
         return Result.success(ans);
     }
+    @GetMapping("/userParse")
+    public Result getUserParse(@RequestParam String parse) {
+        HashMap<String,Integer>ans=threadDataService.getAimedErrorNumber(new String[]{parse});
+        return Result.success(ans);
+    }
 
 
 }
