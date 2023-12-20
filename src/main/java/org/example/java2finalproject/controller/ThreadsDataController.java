@@ -137,31 +137,60 @@ public class ThreadsDataController {
 
     @GetMapping("/getFatalErrorNumber")
     public Result getFatalErrorNumber() {
-        HashMap<String,Integer> ans=threadDataService.getAimedErrorNumber(ErrorsClassify.FatalErrorArray);
-        return Result.success(ans);
+        HashMap<String,Long> res=new HashMap<>();
+        long[][]ans=threadDataService.getAimedTopicRelationships(ErrorsClassify.FatalErrorArray);
+        for(int i=0;i<ans.length;i++){
+            res.put(ErrorsClassify.FatalErrorArray[i],ans[i][i]);
+        }
+        return Result.success(res);
     }
     @GetMapping("/getExceptionNumber")
     public Result getExceptionNumber() {
-        HashMap<String,Integer> ans=threadDataService.getAimedErrorNumber(ErrorsClassify.ExceptionArray);
-        return Result.success(ans);
+        HashMap<String,Long> res=new HashMap<>();
+        long[][]ans=threadDataService.getAimedTopicRelationships(ErrorsClassify.ExceptionArray);
+        for(int i=0;i<ans.length;i++){
+            res.put(ErrorsClassify.ExceptionArray[i],ans[i][i]);
+        }
+        return Result.success(res);
     }
     @GetMapping("/getUserParseNumber")
-    public Result getUserParse(@RequestParam String parse) {
-        HashMap<String,Integer>ans=threadDataService.getAimedErrorNumber(new String[]{parse});
-        return Result.success(ans);
+    public Result getUserParseNumber(@RequestParam String parse) {
+        if(parse.isEmpty()){
+            return Result.fail("输入不能为空！");
+        }
+        long[][]ans=threadDataService.getAimedTopicRelationships(new String[]{parse});
+        HashMap<String,Long>res=new HashMap<>();
+        res.put(parse,ans[0][0]);
+        return Result.success(res);
     }
 
     @GetMapping("/getFatalErrorViewCount")
     public Result getFatalErrorViewCount() {
-        return Result.success(threadDataService.getAimedErrorViewCount(ErrorsClassify.FatalErrorArray));
+        HashMap<String,Long> res=new HashMap<>();
+        long[][]ans=threadDataService.getAimedTopicRelationViewCount(ErrorsClassify.FatalErrorArray);
+        for(int i=0;i<ans.length;i++){
+            res.put(ErrorsClassify.FatalErrorArray[i],ans[i][i]);
+        }
+        return Result.success(res);
     }
     @GetMapping("/getExceptionViewCount")
     public Result getExceptionViewCount() {
-        return Result.success(threadDataService.getAimedErrorViewCount(ErrorsClassify.ExceptionArray));
+        HashMap<String,Long> res=new HashMap<>();
+        long[][]ans=threadDataService.getAimedTopicRelationViewCount(ErrorsClassify.ExceptionArray);
+        for(int i=0;i<ans.length;i++){
+            res.put(ErrorsClassify.ExceptionArray[i],ans[i][i]);
+        }
+        return Result.success(res);
     }
     @GetMapping("/getUserParseViewCount")
     public Result getUserParseViewCount(@RequestParam String parse) {
-        return Result.success(threadDataService.getAimedErrorViewCount(new String[]{parse}));
+        if(parse.isEmpty()){
+            return Result.fail("输入不能为空！");
+        }
+        long[][]ans=threadDataService.getAimedTopicRelationViewCount(new String[]{parse});
+        HashMap<String,Long>res=new HashMap<>();
+        res.put(parse,ans[0][0]);
+        return Result.success(res);
     }
 
 

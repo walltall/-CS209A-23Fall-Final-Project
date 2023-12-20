@@ -280,75 +280,88 @@ public class ThreadDataService {
         }
         return bugNumWithinCategory;
     }
-    public HashMap<String,Integer> getAimedErrorNumber(String[]aimError){
-        List<QuestionData> questionDataList= getAllQuestionData();
-        HashMap<String,Integer>bugNumWithinCategory=new HashMap<>();
-        for(int i=0;i<aimError.length;i++){
-            bugNumWithinCategory.put(aimError[i],0);
+
+    public long[][]getAimedTopicRelationships(String[]aimTopic){
+        HashMap<String,Integer>topicKey=new HashMap<>();
+        for(int i=0;i<aimTopic.length;i++){
+            topicKey.put(aimTopic[i],i);
         }
+        long[][]num=new long[aimTopic.length][aimTopic.length];
+        List<QuestionData> questionDataList= getAllQuestionData();
         for(int i=0;i<questionDataList.size();i++){
             HashMap<String,Boolean>errors=new HashMap<>();
-            for(int j=0;j<aimError.length;j++){
-                errors.put(aimError[j],false);
+            for(int j=0;j<aimTopic.length;j++){
+                errors.put(aimTopic[j],false);
             }
-            ErrorsClassify.ErrorArrayClassifyQ(questionDataList.get(i),errors,aimError);
+            ErrorsClassify.ErrorArrayClassifyQ(questionDataList.get(i),errors,aimTopic);
             List<AnswerData> answerDataList= answerDataRepository.
                     findByQuestionId(questionDataList.get(i).getQuestionId());
             for(int j=0;j<answerDataList.size();j++){
-                ErrorsClassify.ErrorArrayClassifyA(answerDataList.get(j),errors,aimError);
+                ErrorsClassify.ErrorArrayClassifyA(answerDataList.get(j),errors,aimTopic);
                 List<CommentData> commentDataList= commentDataRepository.
                         findCommentDataByPostIdAndPostType(answerDataList.get(j).getAnswerId(),AnswerData.type);
                 for(int k=0;k<commentDataList.size();k++){
-                    ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(k),errors,aimError);
+                    ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(k),errors,aimTopic);
                 }
             }
             List<CommentData> commentDataList= commentDataRepository.
                     findCommentDataByPostIdAndPostType(questionDataList.get(i).getQuestionId(),QuestionData.type);
             for(int j=0;j<commentDataList.size();j++){
-                ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(j),errors,aimError);
+                ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(j),errors,aimTopic);
             }
-            for(int j=0;j<aimError.length;j++){
-                bugNumWithinCategory.put(aimError[j],
-                        bugNumWithinCategory.get(aimError[j])+
-                                (errors.get(aimError[j])?1:0));
+            for(int j=0;j<topicKey.size();j++){
+                if(errors.get(aimTopic[j])){
+                    for(int k=0;k<topicKey.size();k++){
+                        if(errors.get(aimTopic[k])){
+                            num[topicKey.get(aimTopic[j])][topicKey.get(aimTopic[k])]+=1;
+                        }
+                    }
+                }
             }
         }
-        return bugNumWithinCategory;
+        return num;
     }
-    public HashMap<String,Long> getAimedErrorViewCount(String[]aimError){
-        List<QuestionData> questionDataList= getAllQuestionData();
-        HashMap<String,Long>bugNumWithinCategory=new HashMap<>();
-        for(int i=0;i<aimError.length;i++){
-            bugNumWithinCategory.put(aimError[i],0L);
+
+    public long[][]getAimedTopicRelationViewCount(String[]aimTopic){
+        HashMap<String,Integer>topicKey=new HashMap<>();
+        for(int i=0;i<aimTopic.length;i++){
+            topicKey.put(aimTopic[i],i);
         }
+        long[][]num=new long[aimTopic.length][aimTopic.length];
+        List<QuestionData> questionDataList= getAllQuestionData();
         for(int i=0;i<questionDataList.size();i++){
             HashMap<String,Boolean>errors=new HashMap<>();
-            for(int j=0;j<aimError.length;j++){
-                errors.put(aimError[j],false);
+            for(int j=0;j<aimTopic.length;j++){
+                errors.put(aimTopic[j],false);
             }
-            ErrorsClassify.ErrorArrayClassifyQ(questionDataList.get(i),errors,aimError);
+            ErrorsClassify.ErrorArrayClassifyQ(questionDataList.get(i),errors,aimTopic);
             List<AnswerData> answerDataList= answerDataRepository.
                     findByQuestionId(questionDataList.get(i).getQuestionId());
             for(int j=0;j<answerDataList.size();j++){
-                ErrorsClassify.ErrorArrayClassifyA(answerDataList.get(j),errors,aimError);
+                ErrorsClassify.ErrorArrayClassifyA(answerDataList.get(j),errors,aimTopic);
                 List<CommentData> commentDataList= commentDataRepository.
                         findCommentDataByPostIdAndPostType(answerDataList.get(j).getAnswerId(),AnswerData.type);
                 for(int k=0;k<commentDataList.size();k++){
-                    ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(k),errors,aimError);
+                    ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(k),errors,aimTopic);
                 }
             }
             List<CommentData> commentDataList= commentDataRepository.
                     findCommentDataByPostIdAndPostType(questionDataList.get(i).getQuestionId(),QuestionData.type);
             for(int j=0;j<commentDataList.size();j++){
-                ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(j),errors,aimError);
+                ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(j),errors,aimTopic);
             }
-            for(int j=0;j<aimError.length;j++){
-                bugNumWithinCategory.put(aimError[j],
-                        bugNumWithinCategory.get(aimError[j])+
-                                (errors.get(aimError[j])?questionDataList.get(i).getViewCount():0));
+            for(int j=0;j<topicKey.size();j++){
+                if(errors.get(aimTopic[j])){
+                    for(int k=0;k<topicKey.size();k++){
+                        if(errors.get(aimTopic[k])){
+                            num[topicKey.get(aimTopic[j])][topicKey.get(aimTopic[k])]+=
+                                    questionDataList.get(i).getViewCount();
+                        }
+                    }
+                }
             }
         }
-        return bugNumWithinCategory;
+        return num;
     }
 
 }
