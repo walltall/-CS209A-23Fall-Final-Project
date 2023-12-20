@@ -257,6 +257,29 @@ public class ThreadDataService {
         }
         return bugNumWithinCategory;
     }
+    public HashMap<String,Long>getDifferentErrorViewCount(){
+        List<QuestionData> questionDataList= getAllQuestionData();
+        HashMap<String,Long> bugNumWithinCategory=new HashMap<>();
+        bugNumWithinCategory.put(ErrorsClassify.SyntaxErrorName,0L);
+        bugNumWithinCategory.put(ErrorsClassify.FatalErrorName,0L);
+        bugNumWithinCategory.put(ErrorsClassify.ExceptionErrorName,0L);
+        for(int i=0;i<questionDataList.size();i++){
+            HashMap<String,Boolean>errors=errorsMatcher(questionDataList.get(i));
+            bugNumWithinCategory.put(ErrorsClassify.SyntaxErrorName,
+                    bugNumWithinCategory.get(ErrorsClassify.SyntaxErrorName)+
+                            (errors.get(ErrorsClassify.SyntaxErrorName)?
+                                    questionDataList.get(i).getViewCount():0L));
+            bugNumWithinCategory.put(ErrorsClassify.FatalErrorName,
+                    bugNumWithinCategory.get(ErrorsClassify.FatalErrorName)+
+                            (errors.get(ErrorsClassify.FatalErrorName)?
+        questionDataList.get(i).getViewCount():0L));
+            bugNumWithinCategory.put(ErrorsClassify.ExceptionErrorName,
+                    bugNumWithinCategory.get(ErrorsClassify.ExceptionErrorName)+
+                            (errors.get(ErrorsClassify.ExceptionErrorName)?
+                                    questionDataList.get(i).getViewCount():0));
+        }
+        return bugNumWithinCategory;
+    }
     public HashMap<String,Integer> getAimedErrorNumber(String[]aimError){
         List<QuestionData> questionDataList= getAllQuestionData();
         HashMap<String,Integer>bugNumWithinCategory=new HashMap<>();
@@ -292,6 +315,40 @@ public class ThreadDataService {
         }
         return bugNumWithinCategory;
     }
-
+    public HashMap<String,Long> getAimedErrorViewCount(String[]aimError){
+        List<QuestionData> questionDataList= getAllQuestionData();
+        HashMap<String,Long>bugNumWithinCategory=new HashMap<>();
+        for(int i=0;i<aimError.length;i++){
+            bugNumWithinCategory.put(aimError[i],0L);
+        }
+        for(int i=0;i<questionDataList.size();i++){
+            HashMap<String,Boolean>errors=new HashMap<>();
+            for(int j=0;j<aimError.length;j++){
+                errors.put(aimError[j],false);
+            }
+            ErrorsClassify.ErrorArrayClassifyQ(questionDataList.get(i),errors,aimError);
+            List<AnswerData> answerDataList= answerDataRepository.
+                    findByQuestionId(questionDataList.get(i).getQuestionId());
+            for(int j=0;j<answerDataList.size();j++){
+                ErrorsClassify.ErrorArrayClassifyA(answerDataList.get(j),errors,aimError);
+                List<CommentData> commentDataList= commentDataRepository.
+                        findCommentDataByPostIdAndPostType(answerDataList.get(j).getAnswerId(),AnswerData.type);
+                for(int k=0;k<commentDataList.size();k++){
+                    ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(k),errors,aimError);
+                }
+            }
+            List<CommentData> commentDataList= commentDataRepository.
+                    findCommentDataByPostIdAndPostType(questionDataList.get(i).getQuestionId(),QuestionData.type);
+            for(int j=0;j<commentDataList.size();j++){
+                ErrorsClassify.ErrorArrayClassifyC(commentDataList.get(j),errors,aimError);
+            }
+            for(int j=0;j<aimError.length;j++){
+                bugNumWithinCategory.put(aimError[j],
+                        bugNumWithinCategory.get(aimError[j])+
+                                (errors.get(aimError[j])?questionDataList.get(i).getViewCount():0));
+            }
+        }
+        return bugNumWithinCategory;
+    }
 
 }

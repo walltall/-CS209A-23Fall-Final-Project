@@ -130,6 +130,10 @@ public class ThreadsDataController {
     public Result getDifferentErrorNumber() {
         return Result.success(threadDataService.getDifferentErrorNumber());
     }
+    @GetMapping("/getDifferentErrorViewCount")
+    public Result getDifferentErrorViewCount() {
+        return Result.success(threadDataService.getDifferentErrorViewCount());
+    }
 
     @GetMapping("/getFatalErrorNumber")
     public Result getFatalErrorNumber() {
@@ -141,11 +145,26 @@ public class ThreadsDataController {
         HashMap<String,Integer> ans=threadDataService.getAimedErrorNumber(ErrorsClassify.ExceptionArray);
         return Result.success(ans);
     }
-    @GetMapping("/userParse")
+    @GetMapping("/getUserParseNumber")
     public Result getUserParse(@RequestParam String parse) {
         HashMap<String,Integer>ans=threadDataService.getAimedErrorNumber(new String[]{parse});
         return Result.success(ans);
     }
+
+    @GetMapping("/getFatalErrorViewCount")
+    public Result getFatalErrorViewCount() {
+        return Result.success(threadDataService.getAimedErrorViewCount(ErrorsClassify.FatalErrorArray));
+    }
+    @GetMapping("/getExceptionViewCount")
+    public Result getExceptionViewCount() {
+        return Result.success(threadDataService.getAimedErrorViewCount(ErrorsClassify.ExceptionArray));
+    }
+    @GetMapping("/getUserParseViewCount")
+    public Result getUserParseViewCount(@RequestParam String parse) {
+        return Result.success(threadDataService.getAimedErrorViewCount(new String[]{parse}));
+    }
+
+
 
 
 }
