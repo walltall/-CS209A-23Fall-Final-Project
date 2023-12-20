@@ -1,5 +1,6 @@
 package org.example.java2finalproject.controller;
 
+import org.example.java2finalproject.common.ErrorsClassify;
 import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.TagsUtil;
 import org.example.java2finalproject.entity.QuestionData;
@@ -130,7 +131,16 @@ public class ThreadsDataController {
         return Result.success(threadDataService.getDifferentErrorNumber());
     }
 
-
+    @GetMapping("/getFatalErrorNumber")
+    public Result getFatalErrorNumber() {
+        HashMap<String,Integer> ans=threadDataService.getAimedErrorNumber(ErrorsClassify.FatalErrorArray);
+        return Result.success(ans);
+    }
+    @GetMapping("/getExceptionNumber")
+    public Result getExceptionNumber() {
+        HashMap<String,Integer> ans=threadDataService.getAimedErrorNumber(ErrorsClassify.ExceptionArray);
+        return Result.success(ans);
+    }
 
 
 }
