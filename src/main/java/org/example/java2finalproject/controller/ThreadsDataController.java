@@ -1,17 +1,15 @@
 package org.example.java2finalproject.controller;
 
-import org.example.java2finalproject.common.ErrorsClassify;
-import org.example.java2finalproject.common.NumCountObject;
-import org.example.java2finalproject.common.TagsUtil;
+import org.example.java2finalproject.common.*;
 import org.example.java2finalproject.entity.QuestionData;
 import org.example.java2finalproject.service.AnswerDataService;
 import org.example.java2finalproject.service.ThreadDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.example.java2finalproject.common.Result;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -84,7 +82,12 @@ public class ThreadsDataController {
     @GetMapping("/checkInterestingDataAverageViewCount")
     public Result checkInterestingDataAverageViewCount() {
         HashMap<String,Long> ans=threadDataService.getInterestingDataAverageViewCount();
-        return Result.success(ans);
+        NumCountObject[]res=new NumCountObject[TagsUtil.interestingTags.length];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            res[i]=new NumCountObject(TagsUtil.interestingTags[i],ans.get(TagsUtil.interestingTags[i]));
+        }
+        Arrays.sort(res);
+        return Result.success(res);
     }
     @GetMapping("/answerRate")
     public Result answerRate() {
@@ -118,39 +121,52 @@ public class ThreadsDataController {
             resRate.put(key,resRate.getOrDefault(key,0.0)*100/interestingMap.get(key));
             resRate.put(key,Double.parseDouble(String.format("%.2f",resRate.get(key))));
         }
-        HashMap<String,String> ans=new HashMap<>();
         //将resRate中的百分数变为string，存在ans中
-        for(String key:resRate.keySet()){
-            ans.put(key,resRate.get(key)+"%");
+        PercentObject[]ans=new PercentObject[TagsUtil.interestingTags.length];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            ans[i]=new PercentObject(TagsUtil.interestingTags[i],resRate.get(TagsUtil.interestingTags[i]));
         }
+        Arrays.sort(ans);
         return Result.success(ans);
     }
 
     @GetMapping("/getDifferentErrorNumber")
     public Result getDifferentErrorNumber() {
+        HashMap<String,Integer> res=threadDataService.getDifferentErrorNumber();
+        NumCountObject[]ans=new NumCountObject[3];
+        ans[0]=new NumCountObject(ErrorsClassify.SyntaxErrorName,res.get(ErrorsClassify.SyntaxErrorName));
+        ans[1]=new NumCountObject(ErrorsClassify.ExceptionErrorName,res.get(ErrorsClassify.ExceptionErrorName));
+        ans[2]=new NumCountObject(ErrorsClassify.FatalErrorName,res.get(ErrorsClassify.FatalErrorName));
         return Result.success(threadDataService.getDifferentErrorNumber());
     }
     @GetMapping("/getDifferentErrorViewCount")
     public Result getDifferentErrorViewCount() {
+        HashMap<String,Long> res=threadDataService.getDifferentErrorViewCount();
+        NumCountObject[]ans=new NumCountObject[3];
+        ans[0]=new NumCountObject(ErrorsClassify.SyntaxErrorName,res.get(ErrorsClassify.SyntaxErrorName));
+        ans[1]=new NumCountObject(ErrorsClassify.ExceptionErrorName,res.get(ErrorsClassify.ExceptionErrorName));
+        ans[2]=new NumCountObject(ErrorsClassify.FatalErrorName,res.get(ErrorsClassify.FatalErrorName));
         return Result.success(threadDataService.getDifferentErrorViewCount());
     }
 
     @GetMapping("/getFatalErrorNumber")
     public Result getFatalErrorNumber() {
-        HashMap<String,Long> res=new HashMap<>();
         long[][]ans=threadDataService.getAimedTopicRelationships(ErrorsClassify.FatalErrorArray);
+        NumCountObject[]res=new NumCountObject[ans.length];
         for(int i=0;i<ans.length;i++){
-            res.put(ErrorsClassify.FatalErrorArray[i],ans[i][i]);
+            res[i]=new NumCountObject(ErrorsClassify.FatalErrorArray[i],ans[i][i]);//res[i]=ans[i][i]
         }
+        Arrays.sort(res);
         return Result.success(res);
     }
     @GetMapping("/getExceptionNumber")
     public Result getExceptionNumber() {
-        HashMap<String,Long> res=new HashMap<>();
         long[][]ans=threadDataService.getAimedTopicRelationships(ErrorsClassify.ExceptionArray);
+        NumCountObject[]res=new NumCountObject[ans.length];
         for(int i=0;i<ans.length;i++){
-            res.put(ErrorsClassify.ExceptionArray[i],ans[i][i]);
+            res[i]=new NumCountObject(ErrorsClassify.ExceptionArray[i],ans[i][i]);
         }
+        Arrays.sort(res);
         return Result.success(res);
     }
     @GetMapping("/getUserParseNumber")
@@ -166,19 +182,20 @@ public class ThreadsDataController {
 
     @GetMapping("/getFatalErrorViewCount")
     public Result getFatalErrorViewCount() {
-        HashMap<String,Long> res=new HashMap<>();
         long[][]ans=threadDataService.getAimedTopicRelationViewCount(ErrorsClassify.FatalErrorArray);
+        NumCountObject[]res=new NumCountObject[ans.length];
         for(int i=0;i<ans.length;i++){
-            res.put(ErrorsClassify.FatalErrorArray[i],ans[i][i]);
+            res[i]=new NumCountObject(ErrorsClassify.FatalErrorArray[i],ans[i][i]);
         }
+        Arrays.sort(res);
         return Result.success(res);
     }
     @GetMapping("/getExceptionViewCount")
     public Result getExceptionViewCount() {
-        HashMap<String,Long> res=new HashMap<>();
         long[][]ans=threadDataService.getAimedTopicRelationViewCount(ErrorsClassify.ExceptionArray);
+        NumCountObject[]res=new NumCountObject[ans.length];
         for(int i=0;i<ans.length;i++){
-            res.put(ErrorsClassify.ExceptionArray[i],ans[i][i]);
+            res[i]=new NumCountObject(ErrorsClassify.ExceptionArray[i],ans[i][i]);
         }
         return Result.success(res);
     }
@@ -192,6 +209,61 @@ public class ThreadsDataController {
         res.put(parse,ans[0][0]);
         return Result.success(res);
     }
+    @GetMapping("/getRelationTopic")
+    public Result getRelationTopic(@RequestParam String parse) {
+        if(parse.isEmpty()){
+            return Result.fail("输入不能为空！");
+        }
+        String[]checkString=new String[TagsUtil.interestingTags.length+1];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            checkString[i]=TagsUtil.interestingTags[i];
+        }
+        checkString[TagsUtil.interestingTags.length]=parse;
+        long[][]ans=threadDataService.getAimedTopicRelationships(checkString);
+        long[]relation=ans[TagsUtil.interestingTags.length];
+        NumCountObject[]res=new NumCountObject[relation.length];
+        for(int i=0;i<relation.length;i++){
+            res[i]=new NumCountObject(checkString[i],relation[i]);
+        }
+        Arrays.sort(res);
+        HashMap<String,Long>resMap=new HashMap<>();
+        for(int i=0;i<res.length&&i<3;i++){
+            resMap.put(res[i].content.toString(),res[i].num);
+        }
+        return Result.success(resMap);
+    }
+
+    @GetMapping("/getRelationViewCountTopic")
+    public Result getRelationViewCountTopic(@RequestParam String parse) {
+        if(parse.isEmpty()){
+            return Result.fail("输入不能为空！");
+        }
+        String[]checkString=new String[TagsUtil.interestingTags.length+1];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            checkString[i]=TagsUtil.interestingTags[i];
+        }
+        checkString[TagsUtil.interestingTags.length]=parse;
+        long[][]ans=threadDataService.getAimedTopicRelationViewCount(checkString);
+        long[]relation=ans[TagsUtil.interestingTags.length];
+        NumCountObject[]res=new NumCountObject[relation.length];
+        for(int i=0;i<relation.length;i++){
+            res[i]=new NumCountObject(checkString[i],relation[i]);
+        }
+        Arrays.sort(res);
+        HashMap<String,Long>resMap=new HashMap<>();
+        for(int i=0;i<res.length&&i<3;i++){
+            resMap.put(res[i].content.toString(),res[i].num);
+        }
+        return Result.success(resMap);
+    }
+    @GetMapping("/getInterestingTopicAnswerAndCommentsNum")
+    public Result getInterestingTopicAnswerAndCommentsNum() {
+        NumCountObject[]res=threadDataService.getInterestingTagsCommentsAndAnswerNum();
+        Arrays.sort(res);
+        return Result.success(res);
+    }
+
+
 
 
 

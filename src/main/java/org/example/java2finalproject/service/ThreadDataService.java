@@ -145,6 +145,22 @@ public class ThreadDataService {
         }
         return ans;
     }
+    public NumCountObject[]getInterestingTagsCommentsAndAnswerNum(){
+        List<QuestionData>interestingData=getInterestingData();
+        NumCountObject[] ans=new NumCountObject[TagsUtil.interestingTags.length];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            ans[i]=new NumCountObject(TagsUtil.interestingTags[i],0);
+        }
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            for(int j=0;j<interestingData.size();j++){
+                if(interestingData.get(j).getTags().contains("\""+TagsUtil.interestingTags[i]+"\"")){
+                  ans[i].num=ans[i].num+interestingData.get(j).getCommentCount()+interestingData.get(j).getAnswerCount();
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
     public HashMap<String,Long>getInterestingDataAverageViewCount(){
         HashMap<String,Long>getInterestingDataAverageViewCount=new HashMap<>();
         HashMap<String,Long>interestingDataViewCount=getInterestingDataViewCount();
@@ -363,5 +379,63 @@ public class ThreadDataService {
         }
         return num;
     }
+
+
+    public HashSet<String>getAllAimTopicKind(String kind){
+        List<QuestionData> questionDataList= getAllQuestionData();
+        HashSet<String>result=new HashSet<>();
+        String tool=kind.toLowerCase();
+        for(int i=0;i<questionDataList.size();i++){
+            List<AnswerData> answerDataList= answerDataRepository.
+                    findByQuestionId(questionDataList.get(i).getQuestionId());
+            for(int j=0;j<answerDataList.size();j++){
+                List<CommentData> commentDataList= commentDataRepository.
+                        findCommentDataByPostIdAndPostType(answerDataList.get(j).getAnswerId(),AnswerData.type);
+                for(int k=0;k<commentDataList.size();k++){
+                    String[]wordsBody=commentDataList.get(k).getBody().split(" ");
+                    String[]wordsMarkdown=commentDataList.get(k).getBodyMarkdown().split(" ");
+                    //如何内容中有存在一个词内的内容中包含了大写或小写的kind，将其放入result
+                    for(int l=0;l<wordsBody.length;l++){
+                        if(wordsBody[l].toLowerCase().contains(tool)){
+                            result.add(wordsBody[l]);
+                        }
+                    }
+                    for(int l=0;l<wordsMarkdown.length;l++){
+                        if(wordsMarkdown[l].toLowerCase().contains(tool)){
+                            result.add(wordsMarkdown[l]);
+                        }
+                    }
+                }
+                String[]wordsBody=answerDataList.get(j).getBody().split(" ");
+                String[]wordsMarkdown=answerDataList.get(j).getBodyMarkdown().split(" ");
+                for(int l=0;l<wordsBody.length;l++){
+                    if(wordsBody[l].toLowerCase().contains(tool)){
+                        result.add(wordsBody[l]);
+                    }
+                }
+                for(int l=0;l<wordsMarkdown.length;l++){
+                    if(wordsMarkdown[l].toLowerCase().contains(tool)){
+                        result.add(wordsMarkdown[l]);
+                    }
+                }
+            }
+            String[]wordsBody=questionDataList.get(i).getBody().split(" ");
+            String[]wordsMarkdown=questionDataList.get(i).getBodyMarkdown().split(" ");
+            for(int l=0;l<wordsBody.length;l++){
+                if(wordsBody[l].toLowerCase().contains(tool)){
+                    result.add(wordsBody[l]);
+                }
+            }
+            for(int l=0;l<wordsMarkdown.length;l++){
+                if(wordsMarkdown[l].toLowerCase().contains(tool)){
+                    result.add(wordsMarkdown[l]);
+                }
+            }
+        }
+        return result;
+    }
+    //这是我写的最丢人的一次了。转换思路后，发现这整个问题都可以靠同一种方法来解决。
+    // 整个项目的工具实现思路一开始想错了方向，导致代码累赘和整体方法使用非常的混乱
+
 
 }
