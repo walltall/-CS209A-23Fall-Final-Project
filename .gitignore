@@ -32,6 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
+application.properties
+application.yml
+```
+
 
 # 忽略文件
 application.properties

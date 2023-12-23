@@ -1,6 +1,6 @@
 package org.example.java2finalproject.common;
 
-public class PercentObject implements Comparable<NumCountObject> {
+public class PercentObject implements Comparable<PercentObject> {
     public final Object content;
     public double num;
     public PercentObject(Object content, double num) {
@@ -19,7 +19,7 @@ public class PercentObject implements Comparable<NumCountObject> {
 
 
     @Override
-    public int compareTo(NumCountObject o) {
+    public int compareTo(PercentObject o) {
         return Double.compare(o.num, this.num);
     }
 

@@ -109,7 +109,7 @@ public class ThreadsDataController {
         }
         Arrays.sort(res);
         logger.info("用户查询关注的数据的总浏览量");
-        return Result.success(ans);
+        return Result.success(res);
     }
     @GetMapping("/checkInterestingDataAverageViewCount")
     public Result checkInterestingDataAverageViewCount() {
@@ -290,7 +290,7 @@ public class ThreadsDataController {
             }
             Arrays.sort(res);
             HashMap<String, Long> resMap = new HashMap<>();
-            for (int i = 0; i < res.length && i < 3; i++) {
+            for (int i = 0; i < res.length && i < 5; i++) {
                 resMap.put(res[i].content.toString(), res[i].num);
             }
             logger.info("用户查询" + parse + "的相关话题");
@@ -321,7 +321,7 @@ public class ThreadsDataController {
             }
             Arrays.sort(res);
             HashMap<String, Long> resMap = new HashMap<>();
-            for (int i = 0; i < res.length && i < 3; i++) {
+            for (int i = 0; i < res.length && i < 5; i++) {
                 resMap.put(res[i].content.toString(), res[i].num);
             }
             logger.info("用户查询" + parse + "的相关话题");

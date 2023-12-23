@@ -39,12 +39,12 @@ public class AnswerData {
 
 
     public AnswerData(JSONObject jsonObject){
-        this.answerId =jsonObject.getLong("answerId");
-        this.commentCount =jsonObject.getLong("commentCount");
+        this.answerId =jsonObject.getLong("answer_id");
+        this.commentCount =jsonObject.getLong("comment_count");
         this.score=jsonObject.getInt("score");
-        this.lastActivityDate =jsonObject.getLong("lastActivityDate");
+        this.lastActivityDate =jsonObject.getLong("last_activity_date");
         this.creationDate =jsonObject.getLong("creation_date");
-        this.questionId =jsonObject.getLong("questionId");
+        this.questionId =jsonObject.getLong("question_id");
         this.bodyMarkdown =jsonObject.getStr("body_markdown");
         this.link=jsonObject.getStr("link");
         this.title=jsonObject.getStr("title");
