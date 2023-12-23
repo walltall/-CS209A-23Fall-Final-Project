@@ -289,12 +289,8 @@ public class ThreadsDataController {
                 res[i] = new NumCountObject(checkString[i], relation[i]);
             }
             Arrays.sort(res);
-            HashMap<String, Long> resMap = new HashMap<>();
-            for (int i = 0; i < res.length && i < 5; i++) {
-                resMap.put(res[i].content.toString(), res[i].num);
-            }
             logger.info("用户查询" + parse + "的相关话题");
-            return Result.success(resMap);
+            return Result.success(res);
         }catch (Exception e){
             logger.error("用户查询"+ parse +"的相关话题失败");
             return Result.fail();
@@ -320,12 +316,8 @@ public class ThreadsDataController {
                 res[i] = new NumCountObject(checkString[i], relation[i]);
             }
             Arrays.sort(res);
-            HashMap<String, Long> resMap = new HashMap<>();
-            for (int i = 0; i < res.length && i < 5; i++) {
-                resMap.put(res[i].content.toString(), res[i].num);
-            }
             logger.info("用户查询" + parse + "的相关话题");
-            return Result.success(resMap);
+            return Result.success(res);
         }catch (Exception e){
             logger.error("用户查询"+ parse +"的相关话题失败");
             return Result.fail();
