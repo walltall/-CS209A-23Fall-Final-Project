@@ -27,8 +27,8 @@ public class ErrorsClassify {
                     "InternalError|UnsatisfiedLinkError|ExceptionInInitializerError|" +
                     "NoSuchMethodError|NoSuchFieldError|IllegalAccessError|" +
                     "AbstractMethodError|IncompatibleClassChangeError|UnsupportedClassVersionError|" +
-                    "ClassFormatError|BootstrapMethodError|ClassCircularityError|unsatisfiedlinkerror" +
-                    "|fielderrors)";
+                    "ClassFormatError|BootstrapMethodError|ClassCircularityError" +
+                    "|FieldErrors|ResponseError)";
     public static final String[] FatalErrorArray=new String[]{
             "OutOfMemoryError",
             "StackOverflowError",
@@ -49,9 +49,11 @@ public class ErrorsClassify {
             "ClassFormatError",
             "BootstrapMethodError",
             "ClassCircularityError",
-            "unsatisfiedlinkerror",
-            "fielderrors"
+            "FieldErrors",
+            "ResponseError"
     };
+    //filewriteexception", "```exception", "nosuchpaddingexception,"
+    //responsestatusexception(\n", "saxexception,", "(datetimeexception", "parseexception",
     private static final String regexException =
             " (IOException|SQLException|PSQLException|FileNotFoundException|" +
                     "NullPointerException|ArrayIndexOutOfBoundsException|" +
@@ -62,7 +64,9 @@ public class ErrorsClassify {
                     "NegativeArraySizeException|ArrayStoreException|" +
                     "IllegalThreadStateException|IllegalMonitorStateException|" +
                     "NumberFormatException|IllegalStateException|ClientNotFoundException|" +
-                    "AuthenticationException|)";
+                    "AuthenticationException|ExecutionException|ImageCaptureException|" +
+                    "FileWriteException|NoSuchPaddingException|PrinterException|TimeoutException|" +
+                    "ResponseStatusException|ParseException|TechniqueException|JavascriptException|InvalidKeyspecException)";
     public static final String[]ExceptionArray=new String[]{
             "IOException",
             "SQLException",
@@ -83,6 +87,18 @@ public class ErrorsClassify {
             "ArrayStoreException",
             "IllegalThreadStateException",
             "ClientNotFoundException",
+            "AuthenticationException",
+            "ExecutionException",
+            "ImageCaptureException",
+            "FileWriteException",
+            "NoSuchPaddingException",
+            "PrinterException",
+            "TimeoutException",
+            "ResponseStatusException",
+            "ParseException",
+            "TechniqueException",
+            "JavascriptException",
+            "InvalidKeyspecException"
         };
     private static Pattern patternSyntaxError = Pattern.compile(regexSyntaxError, Pattern.CASE_INSENSITIVE);
     private static Pattern patternFatalError = Pattern.compile(regexFatalError, Pattern.CASE_INSENSITIVE);
