@@ -172,8 +172,9 @@ public class ThreadsDataController {
         ans[0]=new NumCountObject(ErrorsClassify.SyntaxErrorName,res.get(ErrorsClassify.SyntaxErrorName));
         ans[1]=new NumCountObject(ErrorsClassify.ExceptionErrorName,res.get(ErrorsClassify.ExceptionErrorName));
         ans[2]=new NumCountObject(ErrorsClassify.FatalErrorName,res.get(ErrorsClassify.FatalErrorName));
+        Arrays.sort(ans);
         logger.info("用户查询不同类型的错误的数量");
-        return Result.success(threadDataService.getDifferentErrorNumber());
+        return Result.success(ans);
     }
     @GetMapping("/getDifferentErrorViewCount")
     public Result getDifferentErrorViewCount() {
@@ -183,7 +184,8 @@ public class ThreadsDataController {
         ans[1]=new NumCountObject(ErrorsClassify.ExceptionErrorName,res.get(ErrorsClassify.ExceptionErrorName));
         ans[2]=new NumCountObject(ErrorsClassify.FatalErrorName,res.get(ErrorsClassify.FatalErrorName));
         logger.info("用户查询不同类型的错误的浏览量");
-        return Result.success(threadDataService.getDifferentErrorViewCount());
+        Arrays.sort(ans);
+        return Result.success(ans);
 
     }
 
