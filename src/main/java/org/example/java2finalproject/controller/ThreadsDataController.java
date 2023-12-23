@@ -214,8 +214,8 @@ public class ThreadsDataController {
         return Result.success(res);
     }
     //TODO
-    @GetMapping("/getUserParseNumber")
-    public Result getUserParseNumber(@RequestParam String phrase) {
+    @GetMapping("/getUserParseNumber/{phrase}")
+    public Result getUserParseNumber(@PathVariable String phrase) {
         if(phrase.isEmpty()){
             logger.warn("用户输入的phrase为空！");
             return Result.fail("输入不能为空！");
@@ -261,8 +261,8 @@ public class ThreadsDataController {
         }
     }
     //TODO
-    @GetMapping("/getUserParseViewCount")
-    public Result getUserParseViewCount(@RequestParam String phrase) {
+    @GetMapping("/getUserParseViewCount/{phrase}")
+    public Result getUserParseViewCount(@PathVariable String phrase) {
         try {
             if (phrase.isEmpty()) {
                 return Result.fail("输入不能为空！");
@@ -278,8 +278,8 @@ public class ThreadsDataController {
         }
     }
     //TODO
-    @GetMapping("/getRelationTopic")
-    public Result getRelationTopic(@RequestParam String phrase) {
+    @GetMapping("/getRelationTopic/{phrase}")
+    public Result getRelationTopic(@PathVariable String phrase) {
         try {
             if (phrase.isEmpty()) {
                 logger.warn("用户输入的phrase为空！");
@@ -306,8 +306,8 @@ public class ThreadsDataController {
     }
 
     //TODO
-    @GetMapping("/getRelationViewCountTopic")
-    public Result getRelationViewCountTopic(@RequestParam String phrase) {
+    @GetMapping("/getRelationViewCountTopic/{phrase}")
+    public Result getRelationViewCountTopic(@PathVariable String phrase) {
         try {
             if (phrase.isEmpty()) {
                 logger.warn("用户输入的phrase为空！");
