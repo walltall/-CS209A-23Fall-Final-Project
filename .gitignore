@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# 忽略文件
+application.properties
+application.yml
+
