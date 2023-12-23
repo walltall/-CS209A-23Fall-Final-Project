@@ -164,7 +164,7 @@ public class ThreadsDataController {
         logger.info("用户查询关注的数据中有回答的比例");
         return Result.success(ans);
     }
-
+    //TODO
     @GetMapping("/getDifferentErrorNumber")
     public Result getDifferentErrorNumber() {
         HashMap<String,Integer> res=threadDataService.getDifferentErrorNumber();
@@ -172,9 +172,11 @@ public class ThreadsDataController {
         ans[0]=new NumCountObject(ErrorsClassify.SyntaxErrorName,res.get(ErrorsClassify.SyntaxErrorName));
         ans[1]=new NumCountObject(ErrorsClassify.ExceptionErrorName,res.get(ErrorsClassify.ExceptionErrorName));
         ans[2]=new NumCountObject(ErrorsClassify.FatalErrorName,res.get(ErrorsClassify.FatalErrorName));
+        Arrays.sort(ans);
         logger.info("用户查询不同类型的错误的数量");
-        return Result.success(threadDataService.getDifferentErrorNumber());
+        return Result.success(ans);
     }
+    //TODO
     @GetMapping("/getDifferentErrorViewCount")
     public Result getDifferentErrorViewCount() {
         HashMap<String,Long> res=threadDataService.getDifferentErrorViewCount();
@@ -183,10 +185,11 @@ public class ThreadsDataController {
         ans[1]=new NumCountObject(ErrorsClassify.ExceptionErrorName,res.get(ErrorsClassify.ExceptionErrorName));
         ans[2]=new NumCountObject(ErrorsClassify.FatalErrorName,res.get(ErrorsClassify.FatalErrorName));
         logger.info("用户查询不同类型的错误的浏览量");
-        return Result.success(threadDataService.getDifferentErrorViewCount());
+        Arrays.sort(ans);
+        return Result.success(ans);
 
     }
-
+    //TODO
     @GetMapping("/getFatalErrorNumber")
     public Result getFatalErrorNumber() {
         long[][]ans=threadDataService.getAimedTopicRelationships(ErrorsClassify.FatalErrorArray);
@@ -198,6 +201,7 @@ public class ThreadsDataController {
         logger.info("用户查询致命错误的数量");
         return Result.success(res);
     }
+    //TODO
     @GetMapping("/getExceptionNumber")
     public Result getExceptionNumber() {
         long[][]ans=threadDataService.getAimedTopicRelationships(ErrorsClassify.ExceptionArray);
@@ -209,6 +213,7 @@ public class ThreadsDataController {
         logger.info("用户查询异常错误的数量");
         return Result.success(res);
     }
+    //TODO
     @GetMapping("/getUserParseNumber")
     public Result getUserParseNumber(@RequestParam String phrase) {
         if(phrase.isEmpty()){
@@ -216,12 +221,12 @@ public class ThreadsDataController {
             return Result.fail("输入不能为空！");
         }
         long[][]ans=threadDataService.getAimedTopicRelationships(new String[]{phrase});
-        HashMap<String,Long>res=new HashMap<>();
-        res.put(phrase,ans[0][0]);
+        NumCountObject[]one=new NumCountObject[1];
+        one[0]=new NumCountObject(phrase,ans[0][0]);
         logger.info("用户查询"+ phrase +"的数量");
-        return Result.success(res);
+        return Result.success(one);
     }
-
+    //TODO
     @GetMapping("/getFatalErrorViewCount")
     public Result getFatalErrorViewCount() {
         try {
@@ -238,6 +243,7 @@ public class ThreadsDataController {
             return Result.fail();
         }
     }
+    //TODO
     @GetMapping("/getExceptionViewCount")
     public Result getExceptionViewCount() {
         try {
@@ -254,26 +260,28 @@ public class ThreadsDataController {
             return Result.fail();
         }
     }
+    //TODO
     @GetMapping("/getUserParseViewCount")
-    public Result getUserParseViewCount(@RequestParam String parse) {
+    public Result getUserParseViewCount(@RequestParam String phrase) {
         try {
-            if (parse.isEmpty()) {
+            if (phrase.isEmpty()) {
                 return Result.fail("输入不能为空！");
             }
-            long[][] ans = threadDataService.getAimedTopicRelationViewCount(new String[]{parse});
-            HashMap<String, Long> res = new HashMap<>();
-            res.put(parse, ans[0][0]);
-            logger.info("用户查询" + parse + "的浏览量");
-            return Result.success(res);
+            long[][] ans = threadDataService.getAimedTopicRelationViewCount(new String[]{phrase});
+            NumCountObject[]one =new NumCountObject[1];
+            one[0]=new NumCountObject(phrase,ans[0][0]);
+            logger.info("用户查询" + phrase + "的浏览量");
+            return Result.success(one);
         }catch (Exception e){
-            logger.error("用户查询"+ parse +"的浏览量失败");
+            logger.error("用户查询"+ phrase +"的浏览量失败");
             return Result.fail();
         }
     }
+    //TODO
     @GetMapping("/getRelationTopic")
-    public Result getRelationTopic(@RequestParam String parse) {
+    public Result getRelationTopic(@RequestParam String phrase) {
         try {
-            if (parse.isEmpty()) {
+            if (phrase.isEmpty()) {
                 logger.warn("用户输入的phrase为空！");
                 return Result.fail("输入不能为空！");
             }
@@ -281,7 +289,7 @@ public class ThreadsDataController {
             for (int i = 0; i < TagsUtil.interestingTags.length; i++) {
                 checkString[i] = TagsUtil.interestingTags[i];
             }
-            checkString[TagsUtil.interestingTags.length] = parse;
+            checkString[TagsUtil.interestingTags.length] = phrase;
             long[][] ans = threadDataService.getAimedTopicRelationships(checkString);
             long[] relation = ans[TagsUtil.interestingTags.length];
             NumCountObject[] res = new NumCountObject[relation.length];
@@ -289,22 +297,19 @@ public class ThreadsDataController {
                 res[i] = new NumCountObject(checkString[i], relation[i]);
             }
             Arrays.sort(res);
-            HashMap<String, Long> resMap = new HashMap<>();
-            for (int i = 0; i < res.length && i < 5; i++) {
-                resMap.put(res[i].content.toString(), res[i].num);
-            }
-            logger.info("用户查询" + parse + "的相关话题");
-            return Result.success(resMap);
+            logger.info("用户查询" + phrase + "的相关话题");
+            return Result.success(res);
         }catch (Exception e){
-            logger.error("用户查询"+ parse +"的相关话题失败");
+            logger.error("用户查询"+ phrase +"的相关话题失败");
             return Result.fail();
         }
     }
 
+    //TODO
     @GetMapping("/getRelationViewCountTopic")
-    public Result getRelationViewCountTopic(@RequestParam String parse) {
+    public Result getRelationViewCountTopic(@RequestParam String phrase) {
         try {
-            if (parse.isEmpty()) {
+            if (phrase.isEmpty()) {
                 logger.warn("用户输入的phrase为空！");
                 return Result.fail("输入不能为空！");
             }
@@ -312,7 +317,7 @@ public class ThreadsDataController {
             for (int i = 0; i < TagsUtil.interestingTags.length; i++) {
                 checkString[i] = TagsUtil.interestingTags[i];
             }
-            checkString[TagsUtil.interestingTags.length] = parse;
+            checkString[TagsUtil.interestingTags.length] = phrase;
             long[][] ans = threadDataService.getAimedTopicRelationViewCount(checkString);
             long[] relation = ans[TagsUtil.interestingTags.length];
             NumCountObject[] res = new NumCountObject[relation.length];
@@ -320,17 +325,14 @@ public class ThreadsDataController {
                 res[i] = new NumCountObject(checkString[i], relation[i]);
             }
             Arrays.sort(res);
-            HashMap<String, Long> resMap = new HashMap<>();
-            for (int i = 0; i < res.length && i < 5; i++) {
-                resMap.put(res[i].content.toString(), res[i].num);
-            }
-            logger.info("用户查询" + parse + "的相关话题");
-            return Result.success(resMap);
+            logger.info("用户查询" + phrase + "的相关话题");
+            return Result.success(res);
         }catch (Exception e){
-            logger.error("用户查询"+ parse +"的相关话题失败");
+            logger.error("用户查询"+ phrase +"的相关话题失败");
             return Result.fail();
         }
     }
+    //TODO
     @GetMapping("/getInterestingTopicAnswerAndCommentsNum")
     public Result getInterestingTopicAnswerAndCommentsNum() {
         try {
