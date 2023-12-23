@@ -17,6 +17,8 @@ public class ErrorsClassify {
     public static String SyntaxErrorName = "SyntaxError";
     public static String FatalErrorName = "FatalError";
     public static String ExceptionErrorName = "ExceptionError";
+    public static String ErrorName="Error";
+    public static String ExceptionName="Exception";
     private static final String regexSyntaxError =
              "(error:|SyntaxError)\\s*([^\\n]+(?:\\n(?!\\n).+)*)";
     private static final String regexFatalError =
@@ -25,7 +27,8 @@ public class ErrorsClassify {
                     "InternalError|UnsatisfiedLinkError|ExceptionInInitializerError|" +
                     "NoSuchMethodError|NoSuchFieldError|IllegalAccessError|" +
                     "AbstractMethodError|IncompatibleClassChangeError|UnsupportedClassVersionError|" +
-                    "ClassFormatError|BootstrapMethodError|ClassCircularityError)";
+                    "ClassFormatError|BootstrapMethodError|ClassCircularityError|unsatisfiedlinkerror" +
+                    "|fielderrors)";
     public static final String[] FatalErrorArray=new String[]{
             "OutOfMemoryError",
             "StackOverflowError",
@@ -45,7 +48,9 @@ public class ErrorsClassify {
             "UnsupportedClassVersionError",
             "ClassFormatError",
             "BootstrapMethodError",
-            "ClassCircularityError"
+            "ClassCircularityError",
+            "unsatisfiedlinkerror",
+            "fielderrors"
     };
     private static final String regexException =
             " (IOException|SQLException|PSQLException|FileNotFoundException|" +
@@ -56,7 +61,8 @@ public class ErrorsClassify {
                     "SecurityException|NoSuchElementException|IllegalArgumentException|" +
                     "NegativeArraySizeException|ArrayStoreException|" +
                     "IllegalThreadStateException|IllegalMonitorStateException|" +
-                    "NumberFormatException|IllegalStateException)";
+                    "NumberFormatException|IllegalStateException|ClientNotFoundException|" +
+                    "AuthenticationException|)";
     public static final String[]ExceptionArray=new String[]{
             "IOException",
             "SQLException",
@@ -76,6 +82,7 @@ public class ErrorsClassify {
             "NegativeArraySizeException",
             "ArrayStoreException",
             "IllegalThreadStateException",
+            "ClientNotFoundException",
         };
     private static Pattern patternSyntaxError = Pattern.compile(regexSyntaxError, Pattern.CASE_INSENSITIVE);
     private static Pattern patternFatalError = Pattern.compile(regexFatalError, Pattern.CASE_INSENSITIVE);

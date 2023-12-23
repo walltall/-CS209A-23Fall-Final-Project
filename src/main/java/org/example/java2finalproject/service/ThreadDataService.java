@@ -3,6 +3,7 @@ package org.example.java2finalproject.service;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import org.apache.log4j.Logger;
 import org.example.java2finalproject.common.NumCountObject;
 import org.example.java2finalproject.common.ErrorsClassify;
 import org.example.java2finalproject.common.TagsUtil;
@@ -30,6 +31,8 @@ public class ThreadDataService {
     @Autowired
     CommentDataRepository commentDataRepository;
 
+    private Logger logger = Logger.getLogger(ThreadDataService.class);
+
     public Optional<QuestionData> getQuestionData(long question_Id) {
         return questionDataRepository.findById(question_Id);
     }
@@ -44,40 +47,44 @@ public class ThreadDataService {
     public int loadData(int dataNum) throws IOException {
         String dataPathPrefix = "ThreadsDataSource/data_";
         String dataPathSuffix = ".json";
-        int count=0;
-        for(int i=1;i<=dataNum;i++){
-            String dataPath = dataPathPrefix + i + dataPathSuffix;
-            File file = new File(dataPath);
-            if(file.exists()){
-                String jsonData = new String(Files.readAllBytes(Paths.get(dataPath)));
-                JSONObject jsonObject= JSONUtil.parseObj(jsonData);
-                JSONArray itemsTopArray =jsonObject.getJSONArray("items");
-                for(int j = 0; j< itemsTopArray.size(); j++){
-                    JSONObject itemQuestion= itemsTopArray.getJSONObject(j);
-                    count++;
-                    questionDataRepository.save(new QuestionData(itemQuestion));
-                    if(itemQuestion.get("answers")!=null){
-                        JSONArray itemsAnswerArray =itemQuestion.getJSONArray("answers");
-                        for(int k = 0; k< itemsAnswerArray.size(); k++){
-                            JSONObject itemAnswer= itemsAnswerArray.getJSONObject(k);
-                            answerDataRepository.save(new AnswerData(itemAnswer));
-                            checkCommentsAndSave(itemAnswer);
+        int count = 0;
+            for (int i = 1; i <= dataNum; i++) {
+                String dataPath = dataPathPrefix + i + dataPathSuffix;
+                File file = new File(dataPath);
+                if (file.exists()) {
+                    String jsonData = new String(Files.readAllBytes(Paths.get(dataPath)));
+                    JSONObject jsonObject = JSONUtil.parseObj(jsonData);
+                    JSONArray itemsTopArray = jsonObject.getJSONArray("items");
+                    for (int j = 0; j < itemsTopArray.size(); j++) {
+                        JSONObject itemQuestion = itemsTopArray.getJSONObject(j);
+                        count++;
+                        questionDataRepository.save(new QuestionData(itemQuestion));
+                        if (itemQuestion.get("answers") != null) {
+                            JSONArray itemsAnswerArray = itemQuestion.getJSONArray("answers");
+                            for (int k = 0; k < itemsAnswerArray.size(); k++) {
+                                JSONObject itemAnswer = itemsAnswerArray.getJSONObject(k);
+                                answerDataRepository.save(new AnswerData(itemAnswer));
+                                checkCommentsAndSave(itemAnswer);
+                            }
                         }
+                        checkCommentsAndSave(itemQuestion);
                     }
-                    checkCommentsAndSave(itemQuestion);
                 }
             }
-        }
-        return count;
+            return count;
     }
 
     private void checkCommentsAndSave(JSONObject item) {
-        if(item.get("comments")!=null){
-            JSONArray itemsCommentArray = item.getJSONArray("comments");
-            for(int l = 0; l< itemsCommentArray.size(); l++){
-                JSONObject itemComment= itemsCommentArray.getJSONObject(l);
-                commentDataRepository.save(new CommentData(itemComment));
+        try {
+            if (item.get("comments") != null) {
+                JSONArray itemsCommentArray = item.getJSONArray("comments");
+                for (int l = 0; l < itemsCommentArray.size(); l++) {
+                    JSONObject itemComment = itemsCommentArray.getJSONObject(l);
+                    commentDataRepository.save(new CommentData(itemComment));
+                }
             }
+        }catch (Exception e){
+            logger.error("checkCommentsAndSave error", e);
         }
     }
 
@@ -396,39 +403,39 @@ public class ThreadDataService {
                     String[]wordsMarkdown=commentDataList.get(k).getBodyMarkdown().split(" ");
                     //如何内容中有存在一个词内的内容中包含了大写或小写的kind，将其放入result
                     for(int l=0;l<wordsBody.length;l++){
-                        if(wordsBody[l].toLowerCase().contains(tool)){
-                            result.add(wordsBody[l]);
+                        if(wordsBody[l].toLowerCase().contains(tool)&&wordsBody[l].length()<=25){
+                            result.add(wordsBody[l].toLowerCase().toLowerCase());
                         }
                     }
                     for(int l=0;l<wordsMarkdown.length;l++){
-                        if(wordsMarkdown[l].toLowerCase().contains(tool)){
-                            result.add(wordsMarkdown[l]);
+                        if(wordsMarkdown[l].toLowerCase().contains(tool)&&wordsMarkdown[l].length()<=25){
+                            result.add(wordsMarkdown[l].toLowerCase());
                         }
                     }
                 }
                 String[]wordsBody=answerDataList.get(j).getBody().split(" ");
                 String[]wordsMarkdown=answerDataList.get(j).getBodyMarkdown().split(" ");
                 for(int l=0;l<wordsBody.length;l++){
-                    if(wordsBody[l].toLowerCase().contains(tool)){
-                        result.add(wordsBody[l]);
+                    if(wordsBody[l].toLowerCase().contains(tool)&&wordsBody[l].length()<=25){
+                        result.add(wordsBody[l].toLowerCase());
                     }
                 }
                 for(int l=0;l<wordsMarkdown.length;l++){
-                    if(wordsMarkdown[l].toLowerCase().contains(tool)){
-                        result.add(wordsMarkdown[l]);
+                    if(wordsMarkdown[l].toLowerCase().contains(tool)&&wordsMarkdown[l].length()<=25){
+                        result.add(wordsMarkdown[l].toLowerCase());
                     }
                 }
             }
             String[]wordsBody=questionDataList.get(i).getBody().split(" ");
             String[]wordsMarkdown=questionDataList.get(i).getBodyMarkdown().split(" ");
             for(int l=0;l<wordsBody.length;l++){
-                if(wordsBody[l].toLowerCase().contains(tool)){
-                    result.add(wordsBody[l]);
+                if(wordsBody[l].toLowerCase().contains(tool)&&wordsBody[l].length()<=25){
+                    result.add(wordsBody[l].toLowerCase());
                 }
             }
             for(int l=0;l<wordsMarkdown.length;l++){
-                if(wordsMarkdown[l].toLowerCase().contains(tool)){
-                    result.add(wordsMarkdown[l]);
+                if(wordsMarkdown[l].toLowerCase().contains(tool)&&wordsMarkdown[l].length()<=25){
+                    result.add(wordsMarkdown[l].toLowerCase());
                 }
             }
         }
