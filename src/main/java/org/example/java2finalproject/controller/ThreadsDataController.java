@@ -111,6 +111,20 @@ public class ThreadsDataController {
         logger.info("用户查询关注的数据的总浏览量");
         return Result.success(res);
     }
+    //TODO
+    @GetMapping("/checkMostOneInterestingDataViewCount")
+    public Result checkMostOneInterestingDataViewCount() {
+        HashMap<String,Long> ans=threadDataService.getInterestingDataViewCount();
+        NumCountObject[]res=new NumCountObject[TagsUtil.interestingTags.length];
+        for(int i=0;i<TagsUtil.interestingTags.length;i++){
+            res[i]=new NumCountObject(TagsUtil.interestingTags[i],ans.get(TagsUtil.interestingTags[i]));
+        }
+        Arrays.sort(res);
+        NumCountObject[]res1=new NumCountObject[1];
+        res1[0]=res[0];
+        logger.info("用户查询关注的数据的总浏览量");
+        return Result.success(res1);
+    }
     @GetMapping("/checkInterestingDataAverageViewCount")
     public Result checkInterestingDataAverageViewCount() {
         HashMap<String,Long> ans=threadDataService.getInterestingDataAverageViewCount();
@@ -244,6 +258,25 @@ public class ThreadsDataController {
         }
     }
     //TODO
+    @GetMapping("/getMostOneFatalErrorViewCount")
+    public Result getMostOneFatalErrorViewCount() {
+        try {
+            long[][] ans = threadDataService.getAimedTopicRelationViewCount(ErrorsClassify.FatalErrorArray);
+            NumCountObject[] res = new NumCountObject[ans.length];
+            for (int i = 0; i < ans.length; i++) {
+                res[i] = new NumCountObject(ErrorsClassify.FatalErrorArray[i], ans[i][i]);
+            }
+            Arrays.sort(res);
+            logger.info("用户查询浏览量最多的致命错误");
+            NumCountObject[]one=new NumCountObject[1];
+            one[0]=res[0];
+            return Result.success(one);
+        }catch (Exception e){
+            logger.error("用户查询致命错误的浏览量失败");
+            return Result.fail();
+        }
+    }
+    //TODO
     @GetMapping("/getExceptionViewCount")
     public Result getExceptionViewCount() {
         try {
@@ -255,6 +288,25 @@ public class ThreadsDataController {
             Arrays.sort(res);
             logger.info("用户查询异常错误的浏览量");
             return Result.success(res);
+        }catch (Exception e){
+            logger.error("用户查询异常错误的浏览量失败");
+            return Result.fail();
+        }
+    }
+    //TODO
+    @GetMapping("/getMostOneExceptionViewCount")
+    public Result getMostOneExceptionViewCount() {
+        try {
+            long[][] ans = threadDataService.getAimedTopicRelationViewCount(ErrorsClassify.ExceptionArray);
+            NumCountObject[] res = new NumCountObject[ans.length];
+            for (int i = 0; i < ans.length; i++) {
+                res[i] = new NumCountObject(ErrorsClassify.ExceptionArray[i], ans[i][i]);
+            }
+            Arrays.sort(res);
+            NumCountObject[]one=new NumCountObject[1];
+            one[0]=res[0];
+            logger.info("用户查询浏览量最多的异常错误");
+            return Result.success(one);
         }catch (Exception e){
             logger.error("用户查询异常错误的浏览量失败");
             return Result.fail();
@@ -285,20 +337,24 @@ public class ThreadsDataController {
                 logger.warn("用户输入的phrase为空！");
                 return Result.fail("输入不能为空！");
             }
-            String[] checkString = new String[TagsUtil.interestingTags.length + 1];
-            for (int i = 0; i < TagsUtil.interestingTags.length; i++) {
-                checkString[i] = TagsUtil.interestingTags[i];
+            String[] checkString = new String[TagsUtil.topic.length + 1];
+            for (int i = 0; i < TagsUtil.topic.length; i++) {
+                checkString[i] = TagsUtil.topic[i];
             }
-            checkString[TagsUtil.interestingTags.length] = phrase;
+            checkString[TagsUtil.topic.length] = phrase;
             long[][] ans = threadDataService.getAimedTopicRelationships(checkString);
-            long[] relation = ans[TagsUtil.interestingTags.length];
+            long[] relation = ans[TagsUtil.topic.length];
             NumCountObject[] res = new NumCountObject[relation.length];
             for (int i = 0; i < relation.length; i++) {
                 res[i] = new NumCountObject(checkString[i], relation[i]);
             }
             Arrays.sort(res);
             logger.info("用户查询" + phrase + "的相关话题");
-            return Result.success(res);
+            NumCountObject[]bestFive=new NumCountObject[5];
+            for(int i=0;i<5;i++){
+                bestFive[i]=res[i];
+            }
+            return Result.success(bestFive);
         }catch (Exception e){
             logger.error("用户查询"+ phrase +"的相关话题失败");
             return Result.fail();
@@ -313,20 +369,24 @@ public class ThreadsDataController {
                 logger.warn("用户输入的phrase为空！");
                 return Result.fail("输入不能为空！");
             }
-            String[] checkString = new String[TagsUtil.interestingTags.length + 1];
-            for (int i = 0; i < TagsUtil.interestingTags.length; i++) {
-                checkString[i] = TagsUtil.interestingTags[i];
+            String[] checkString = new String[TagsUtil.topic.length + 1];
+            for (int i = 0; i < TagsUtil.topic.length; i++) {
+                checkString[i] = TagsUtil.topic[i];
             }
-            checkString[TagsUtil.interestingTags.length] = phrase;
+            checkString[TagsUtil.topic.length] = phrase;
             long[][] ans = threadDataService.getAimedTopicRelationViewCount(checkString);
-            long[] relation = ans[TagsUtil.interestingTags.length];
+            long[] relation = ans[TagsUtil.topic.length];
             NumCountObject[] res = new NumCountObject[relation.length];
             for (int i = 0; i < relation.length; i++) {
                 res[i] = new NumCountObject(checkString[i], relation[i]);
             }
             Arrays.sort(res);
+            NumCountObject[]bestFive=new NumCountObject[5];
+            for(int i=0;i<5;i++){
+                bestFive[i]=res[i];
+            }
             logger.info("用户查询" + phrase + "的相关话题");
-            return Result.success(res);
+            return Result.success(bestFive);
         }catch (Exception e){
             logger.error("用户查询"+ phrase +"的相关话题失败");
             return Result.fail();
@@ -368,6 +428,8 @@ public class ThreadsDataController {
             return Result.fail();
         }
     }
+
+
 
 
 
