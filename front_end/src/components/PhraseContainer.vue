@@ -11,22 +11,22 @@
         </el-input>
         </div>
         <div>
-            <p class="data-line">数量：{{ quantity }}</p>
-            <p class="data-line">浏览量：{{ views }}</p>
+            <p class="data-line">话题数量：{{ quantity }}</p>
+            <p class="data-line">话题浏览量：{{ views }}</p>
         </div>
         <div class="charts-container">
             <div class="chart-container">
-                <h2 class="chart-title">相关话题数量</h2>
+                <h2 class="chart-title">相关话题（按数量排序）</h2>
                 <div class="chart" ref="reNum"></div>
                 <el-button type="primary" @click="loadReNum" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
-                    加载相关话题数量数据
+                    加载数据
                 </el-button>
             </div>
             <div class="chart-container">
-                <h2 class="chart-title">相关话题浏览量</h2>
+                <h2 class="chart-title">相关话题（按浏览量排序）</h2>
                 <div class="chart" ref="reView"></div>
                 <el-button type="primary" @click="loadReView" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
-                    加载相关话题浏览量数据
+                    加载数据
                 </el-button>
             </div>
         </div>

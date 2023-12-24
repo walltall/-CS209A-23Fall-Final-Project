@@ -20,7 +20,7 @@ public class ErrorsClassify {
     public static String ErrorName="Error";
     public static String ExceptionName="Exception";
     private static final String regexSyntaxError =
-             "(error:|SyntaxError)\\s*([^\\n]+(?:\\n(?!\\n).+)*)";
+            "(SyntaxError)\\s*([^\\n]+(?:\\n(?!\\n).+)*)";
     private static final String regexFatalError =
             "(OutOfMemoryError|StackOverflowError|NoClassDefFoundError|" +
                     "AssertionError|LinkageError|VirtualMachineError|UnknownError|" +

@@ -2,43 +2,49 @@
 <template>
   <div>
     <div class="charts-container">
+      <div>
+        <p class="data-line">最热门Error：{{mostName}}</p>
+        <p class="data-line">浏览量: {{ mostNum }}</p>
+        <p class="data-line">最热门Exception：{{mostName2}}</p>
+        <p class="data-line">浏览量: {{ mostNum2 }}</p>
+      </div>
       <div class="chart-container">
-        <h2 class="chart-title">不同Error数量比较</h2>
+        <h2 class="chart-title">不同类型的Error（按数量比较）</h2>
         <div class="chart" ref="errorNum"></div>
         <el-button type="primary" @click="loadErrData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
           加载Error数据
         </el-button>
       </div>
       <div class="chart-container">
-        <h2 class="chart-title">不同Error浏览量比较</h2>
+        <h2 class="chart-title">不同类型的Error（按浏览量比较）</h2>
         <div class="chart" ref="errViews"></div>
         <el-button type="primary" @click="loadErrViewData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
           加载Error浏览量数据
         </el-button>
       </div>
       <div class="chart-container">
-        <h2 class="chart-title">Exception数量统计</h2>
+        <h2 class="chart-title">相同类型Exception（按数量比较）</h2>
         <div class="chart" ref="exceptionNum"></div>
         <el-button type="primary" @click="loadExceptionNumData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
           加载Exception数据
         </el-button>
       </div>
       <div class="chart-container">
-        <h2 class="chart-title">Fatal Error数量统计</h2>
-        <div class="chart" ref="fatalErr"></div>
-        <el-button type="primary" @click="loadFatalErr" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
-          加载fatal error数据
-        </el-button>
-      </div>
-      <div class="chart-container">
-        <h2 class="chart-title">Exception浏览量统计</h2>
+        <h2 class="chart-title">相同类型Exception（按浏览量比较）</h2>
         <div class="chart" ref="exceptionView"></div>
         <el-button type="primary" @click="loadExceptionView" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
           加载exception view数据
         </el-button>
       </div>
       <div class="chart-container">
-        <h2 class="chart-title">Fatal Error浏览量统计</h2>
+        <h2 class="chart-title">相同类型Fatal Error（按数量比较）</h2>
+        <div class="chart" ref="fatalErr"></div>
+        <el-button type="primary" @click="loadFatalErr" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
+          加载fatal error数据
+        </el-button>
+      </div>
+      <div class="chart-container">
+        <h2 class="chart-title">相同类型Fatal Error（按浏览量比较）</h2>
         <div class="chart" ref="fatalErrView"></div>
         <el-button type="primary" @click="loadFatalErrView" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
           加载fatal error view数据
@@ -52,6 +58,8 @@
   import * as echarts from 'echarts';
   export default {
     mounted(){
+      this.loadMostData();
+      this.loadMostData2();
       this.loadErrData();
       this.loadErrViewData();
       this.loadExceptionNumData();
@@ -61,6 +69,10 @@
     },
     data() {
       return {
+        mostName: '',
+        mostNum: 0,
+        mostName2: '',
+        mostNum2: 0,
         errorData: {
           data: [],
         },
@@ -144,6 +156,20 @@
           this.fatalErrViewData.data.push({value: dataList[i].num, name: dataList[i].content});
         }
         this.initPieChart(this.$refs.fatalErrView, this.fatalErrViewData);
+      },
+
+      async loadMostData(){
+        const response = await this.$axios.get('http://localhost:8081/Threads/getMostOneFatalErrorViewCount');
+        const dataList = response.data.data;
+        this.mostName = dataList[0].content;
+        this.mostNum = dataList[0].num;
+      },
+
+      async loadMostData2(){
+        const response = await this.$axios.get('http://localhost:8081/Threads/getMostOneExceptionViewCount');
+        const dataList = response.data.data;
+        this.mostName2 = dataList[0].content;
+        this.mostNum2 = dataList[0].num;
       },
 
       initPieChart(container, data) {

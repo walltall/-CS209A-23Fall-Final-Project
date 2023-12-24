@@ -1,28 +1,32 @@
 <template>
   <div class="charts-container">
+    <div>
+      <p class="data-line">最热门话题：{{mostName}}</p>
+      <p class="data-line">浏览量: {{ mostNum }}</p>
+    </div>
     <div class="chart-container">
-      <h2 class="chart-title">热门标签</h2>
+      <h2 class="chart-title">按标签数量排序</h2>
       <div class="chart" ref="tags"></div>
       <el-button type="primary" @click="loadTagData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
         加载标签数据
       </el-button>
     </div>
     <div class="chart-container">
-      <h2 class="chart-title">总浏览量</h2>
+      <h2 class="chart-title">按总浏览量排序</h2>
       <div class="chart" ref="views"></div>
       <el-button type="primary" @click="loadViewData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
         加载浏览数据
       </el-button>
     </div>
     <div class="chart-container">
-      <h2 class="chart-title">每日浏览量</h2>
+      <h2 class="chart-title">按每日浏览量排序</h2>
       <div class="chart" ref="dviews"></div>
       <el-button type="primary" @click="loadViewData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
         加载每日浏览数据
       </el-button>
     </div>
     <div class="chart-container">
-      <h2 class="chart-title">回答率</h2>
+      <h2 class="chart-title">按回答率排序</h2>
       <div class="chart" ref="anRate"></div>
       <el-button type="primary" @click="loadAnRateData" style="margin-top: 10px; horiz-align: center; margin-bottom: 10px">
         加载回答率数据
@@ -37,6 +41,8 @@ import * as echarts from 'echarts';
 export default {
   data() {
     return {
+      mostName: '',
+      mostNum: 0,
       // Sample data for demonstration
       tagData: {
         categories: [],
@@ -57,6 +63,7 @@ export default {
     };
   },
   mounted() {
+    this.loadMostData();
     this.loadTagData();
     this.initBarChart(this.$refs.tags, this.tagData);
     this.loadViewData();
@@ -112,6 +119,12 @@ export default {
         this.anRateData.data.push(dataList[i].num);
       }
       this.initBarChart(this.$refs.anRate, this.anRateData);
+    },
+    async loadMostData(){
+      const response = await this.$axios.get('http://localhost:8081/Threads/checkMostOneInterestingDataViewCount');
+      const dataList = response.data.data;
+      this.mostName = dataList[0].content;
+      this.mostNum = dataList[0].num;
     },
     initBarChart(container, data) {
       const chart = echarts.init(container);
